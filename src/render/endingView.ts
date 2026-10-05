@@ -72,7 +72,7 @@ export class EndingView {
 
   /** One frame of the original loop: `ticks` 16 ms steps, `dtMs` real time. */
   advance(ticks: number, dtMs: number): void {
-    this.angle[0] -= dtMs * LEAD_SPIN;
+    this.angle[0] += dtMs * LEAD_SPIN;
     for (let i = 0; i < COUNT; i++) {
       this.z[i] -= SPEED * ticks;
       if (i === 0) {
