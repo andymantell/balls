@@ -13,7 +13,12 @@ export const SAMPLES = ['boun', 'dia', 'thun', 'end', 'start', 'endbest', 'bnorm
 export type SampleName = (typeof SAMPLES)[number];
 
 const SAMPLE_RATE = 22000;
-const CHANNEL_GAIN = 0.35; // one MIDAS channel at volume 63 relative to full scale
+const EFFECT_CHANNELS = 16; // MIDASallocAutoEffectChannels(16)
+// MIDAS was opened with 64 channels (16 for effects, 0x406e0d), so its mixer
+// scales each channel down and the 5-copy jingles do not clip. Its exact
+// amplification is not known; this keeps the loudest case (5 copies) at full
+// scale and preserves the relative loudness of 1, 2, 4 and 5 copies.
+const CHANNEL_GAIN = 0.2;
 
 export class Audio {
   private ctx: AudioContext | null = null;
@@ -24,6 +29,7 @@ export class Audio {
   private sfxGain!: GainNode;
   private musicGain!: GainNode;
   private loading: Promise<void> | null = null;
+  private voices: AudioBufferSourceNode[] = [];
 
   /** Must be called from a user gesture before anything is audible. */
   unlock(): void {
@@ -36,7 +42,7 @@ export class Audio {
       this.sfxGain = this.ctx.createGain();
       this.sfxGain.connect(this.ctx.destination);
       this.musicGain = this.ctx.createGain();
-      this.musicGain.gain.value = 0.8;
+      this.musicGain.gain.value = 0.6;
       this.musicGain.connect(this.ctx.destination);
       this.loading = this.loadSamples();
       if (this.musicName) {
@@ -75,9 +81,25 @@ export class Audio {
     // MIDAS resamples to 22 kHz playback regardless of the file's own rate.
     src.playbackRate.value = SAMPLE_RATE / buffer.sampleRate;
     const gain = ctx.createGain();
-    gain.gain.value = (Math.max(0, Math.min(63, volume)) / 63) * count * CHANNEL_GAIN;
+    gain.gain.value = (Math.max(0, Math.min(63, volume)) / 63) * CHANNEL_GAIN;
     src.connect(gain).connect(this.sfxGain);
     src.start();
+    // Each copy takes a channel; when all are busy the oldest is reused.
+    src.onended = () => {
+      this.voices = this.voices.filter((v) => v !== src);
+    };
+    for (let i = 0; i < count; i++) this.voices.push(src);
+    while (this.voices.length > EFFECT_CHANNELS) {
+      const old = this.voices.shift()!;
+      if (!this.voices.includes(old)) {
+        try {
+          old.stop();
+        } catch {
+          /* already stopped */
+        }
+      }
+    }
+    gain.gain.value *= count;
   }
 
   playMusic(name: string): void {
