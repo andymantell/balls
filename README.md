@@ -14,6 +14,11 @@ See [docs/REVERSE_ENGINEERING.md](docs/REVERSE_ENGINEERING.md). The 15
 original levels, textures, sounds and music are used in their original formats,
 so levels made with the original `MAKEMAP.EXE` work too.
 
+| | |
+|---|---|
+| ![Main menu](docs/screenshots/menu.jpg) | ![Chase](docs/screenshots/chase.jpg) |
+| ![Jump: the blue ball in mid-air](docs/screenshots/jump.jpg) | ![The ending](docs/screenshots/ending.jpg) |
+
 ## Running
 
 ```sh
