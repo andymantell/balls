@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>I've got some BALLS</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #000;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+      #hint {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 12px;
+        text-align: center;
+        font: 14px/1.4 system-ui, sans-serif;
+        color: #8ff;
+        opacity: 0.8;
+        pointer-events: none;
+        transition: opacity 0.5s;
+      }
+      #hint.hidden {
+        opacity: 0;
+      }
+      .error {
+        position: fixed;
+        inset: 16px;
+        color: #f88;
+        white-space: pre-wrap;
+        font: 12px monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="screen"></canvas>
+    <div id="hint">Arrow keys move, SPACE selects / ACTION, ESC goes back. Press a key to enable sound.</div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

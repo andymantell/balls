@@ -7,6 +7,7 @@ import { Special } from '../sim/simObject';
 import { loadModel, type TextureCache } from './assets';
 import { D3DMaterial, MAX_LIGHTS, createLightUniforms, materialParams, type LightUniforms } from './d3dMaterial';
 import { buildGeometry, unitQuad } from './meshBuilder';
+import { MsvcRand } from '../core/rand';
 
 const FAR = 3000;
 const HUGE_RANGE = 9999;
@@ -94,6 +95,8 @@ export class LevelView {
   private zap!: THREE.Mesh;
   private zapMaterial!: D3DMaterial;
   private order = { opaque: 0, blended: 1000 };
+  /** Lightning jitter uses its own generator so drawing never perturbs the simulation. */
+  private fxRand = new MsvcRand(1);
 
   constructor(readonly world: World) {
     this.scene.matrixWorldAutoUpdate = true;
@@ -268,7 +271,7 @@ export class LevelView {
     this.zap.visible = w.zapTimer > 0 && blue;
     if (this.zap.visible) {
       const a = this.zap.geometry.getAttribute('position') as THREE.BufferAttribute;
-      const r = w.rand;
+      const r = this.fxRand;
       a.setXYZ(0, ball.x + 20 * r.noise(), ball.y, ball.z + 20 * r.noise());
       a.setXYZ(1, ball.x + 20 * r.noise(), ball.y, ball.z + 20 * r.noise());
       a.setXYZ(2, w.zapTarget.x, w.zapTarget.y, w.zapTarget.z);
