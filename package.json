@@ -1,0 +1,24 @@
+{
+  "name": "ive-got-some-balls",
+  "private": true,
+  "version": "2.0.0",
+  "description": "A faithful three.js port of Sebastian Aaltonen's 1999 freeware game I've got some BALLS",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/three": "^0.186.0",
+    "typescript": "~5.9",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
+  }
+}

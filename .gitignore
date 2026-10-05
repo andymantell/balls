@@ -1,6 +1,4 @@
-# Godot
-.godot/
-/android/
-# Exports
-/build/
-*.tmp
+node_modules/
+dist/
+*.log
+test-results/
