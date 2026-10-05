@@ -1,0 +1,477 @@
+I've got some BALLS v1.02      (3D-engine v4.0)   
+(C) Sebastian Aaltonen 1999    
+-----------------------------------------------
+
+This game is fully FREEWARE so you may copy it as much as
+you want. The game is allowed to be distributed by all 
+distribution channels (like collection CDs, WWW-pages and BBS 
+etc.) without special authorization. Selfmade levels to the game
+and other addons may be distributed freely as long as you
+don't try to change the name of the author or try in any
+other way to cause harm to author. If you make addons to
+the game then remember also to mention that you have made them
+yourself and they are not my productions. You are permitted
+to make money with the game and it can be used for advertising
+purposes, etc...
+
+
+
+NOTICE!
+Balls requires DirectX 6.0 to function but recommendation
+is however newest possible version of DirectX because they
+usually have better optimized processor's instruction set
+usage (like 3dNow/SSE). Don't run any other programs on 
+the background when you use the game because they can cause
+sudden slowdowns and thus worsen the playability enormously.
+Especially avoid launching the game from MSDOS "fullscreen" -
+prompt, or you may get problems with 3d-cards because some
+old 3d-cards don't recognize all of their screen modes.
+
+
+About 3D-engine
+---------------
+
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ This information is out of date. Now my newest engine is
+ Shatter3D and you can go to my www-site to see all it's
+ features.
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+This is my first game based on my new 3D-engine and hopefully
+it can show some of it's abilities. The new 3D engine is 
+almost completely reprogrammed (from v2.0) and it uses DX6.1's 
+Direct3D API.
+
+New in the engine:
+* Considerable faster and code has been improved in other ways too
+* Uses "strips" to draw polygons (speeds rendering up a lot)
+* Realtime moving lights
+* Specular reflections of lights
+* Object's path routes
+* Object pivot-points for rotation etc.
+* Decent colliding routines via raytrace
+  -> makes multiple floors possible etc.
+* Decent bouncing routines
+* Better material handling
+* Better object handling and object groups
+* No object, texture, face, vertex, etc limitations anymore
+* Support for different instruction sets through DX6.1's D3D (3dNOW! and SSE)
+
+I haven't had time to do lens flares, vertex shadows,
+%-transparency and few other things to the newest version of
+the engine. Flares are just piece of cake but shadows and
+%-transparency are harder to do now because I don't use
+anymore my own lightning routines but DX6's integrated routines.
+This because of that engine can support the special instructions of
+the processors (3dNOW!/SSE) and in future 3d-card's internal rotations
+and light calculations.
+(...just when NV10 and others will come)
+
+You can take screenshots from the game by pressing PRINTSCRN-
+key. (Notice, Windows' build up screen capturing works only
+with video cards which also have 2d-abilities so NOT with 
+Voodoo 1/2).
+
+The game has been tested with following systems and it has worked
+without problems and fast:
+
+Tested processors:
+AMD K6 (200)
+AMD K6-2 (300/333/350)
+Celeron (333/433/462)
+Pentium (166MMX/200/200MMX)
+Pentium II (262)
+Dual celeron (433*2)
+
+Tested DX-versions:
+DirectX 6.0
+DirectX 6.1
+DirectX 7.0
+
+Tested operating systems:
+Windows 95 (my÷s OSR2)
+Windows 98
+Windows 2000 (Release Canditate 1)
+
+Tested memory amounts:
+32MB, 64MB, 128MB, 192MB, 256MB
+
+Tested 3d-cards:
+VOODOO 1 (4/6 MB)
+VOODOO 2 (8/12 MB)
+VOODOO 3 3000 (16 MB)
+VOODOO RUSH (6/8 MB)
+VOODOO BANSHEE (16MB)
+RIVA 128 (4MB)
+RIVA TNT (16MB)
+RIVA Ultra-TNT2 (32MB)
+MATROX G400 (16MB)
+S3 SAVAGE4 (16MB) 
+INTEL I770 (8MB)
+SOFTWARE RGB EMULATION            (OK, but really slow)
+
+If you own a 3d-card which haven't been tested here could you send
+mail and tell how does the game work on your card. Please send
+also the information of your computer (processor+memory).
+
+
+About game making and other
+---------------------------
+Tappo II's last version had finally gotten to distribution and
+I thought that I had enough time for the next game... But
+matriculation examination took all my time... Now, however
+everything is over and I've also got free-time for programming. First
+I was going to start Tappo III, but then I noticed one thing:
+MBNet's pages were every month full of new "cave shoot'em ups" and
+more is coming... Maybe there would be demand for other kind games 
+too. I myself felt in love last year with game called Action
+Supercross. It was really different from the common games and it 
+had before unseen ideas. I was in hook immediately.
+
+Hopefully BALLS is also a bit more idea-rich than my former 
+shoot'em ups:
+Tappo II, Fight 2, Space Command 2, Tappo!, Cruiser, Fight, Star...
+(In fact Tappo III got almost ready and it would had been the
+world's first 3d-"cave shoot 'em up"...)
+
+
+----------------------------------
+I've got some BALLS game's actions
+----------------------------------
+
+Menus
+-----
+In menus you move with arrowkeys and select options with SPACE-button.
+With ESC you get backwards. If you have altered keys then you of course
+use them.
+
+When you first time start the game, it goes automatically to SETUP menu
+position. Change settings and keys to which you like. Game saves settings
+and you don't have to change them in future.
+
+
+Mainmenu
+--------
+START GAME	- Starts game. In game you go through all 12 levels.
+SINGLE MAP	- In single map game you choose one level and you can
+                  play it thorugh many times. This game type is useful
+                  for making level records.
+SETUP		- Setup menu, in which you can change game settings and keys.
+QUIT		- Quits game and goes back to Windows.
+
+
+Setup Menu
+----------
+SPECULAR: OFF / ON(NORMAL) / ON(AMD FIXED)
+Toggles light's specular reflections on/off. If you own DX6.1 and AMD
+3dNOW! processor then choose "AMD FIXED" otherwise select "NORMAL".
+If your system's 3d card is too slow then choose "OFF" and you gain some
+more speed.
+
+ANTIALIAS: OFF / FULLSCENE
+Toggles antialias. This feature works only with newest 3d-cards and
+with them only if feature has been enabled from drivers. Fullscene
+antialiasing 'costs' a heck lot of 3d-card's power and only the most
+powerful 3d cards can maintain some kind of playable game speed.
+
+CONTROLS
+Changings key settings. You can restore default settings by deleting
+file "keys.dat" from game's directory.
+
+
+How do I play BALLS??
+---------------------
+In "I've got some BALLS" your mission is to guide a small ball through
+levels full of dangers. In order to complete the level you must collect
+all the diamonds. You are helped by different colored balls, to get through 
+the levels, which you'll get on your use by moving through different colored 
+gates. Different balls have their own special abilities.
+
+Game controls:  (unless you have changed default settings)
+Arrows    - Accelerates balls's speed to desired direction
+R         - Restart level
+SPACE     - Ball's special ability (jumping/braking etc.)
+ESC       - From game to menu
+F2        - Changes graphic-settings
+F12       - Quits to Windows (fast quit)
+ALT+ENTER - Toggles between fullscreen/windowed graphics mode
+
+Different colored balls:
+Red: 200% speed
+Yellow: Can jump (from ACTION-button)
+Blue: Shoots diamonds with electricity from distance
+Green: Can brake quickly and can float in the air (from ACTION-button)
+
+You'll get different balls on your use by moving through different
+colored gates, which changes the color of your ball. The special
+ability of the ball can be activated with ACTION-button (normally SPACE).
+
+Controlling of the ball may feel difficult at the beginning but
+you'll get used to it. Let's fix a common misunderstandment: 
+Sidearrows DON'T turn the moving direction of the ball and the 
+upper arrow doesn't accelerate ball's speed or down arrow doesn't 
+deaccelerate... Rather all arrow keys work in the same way, which means 
+that they INCREASE ball's speed to wanted direction. It is completely normal 
+if you'll lose your nerves with the game controls during the first test
+times - I have experience with it. (so don't send me a mail
+about the jerkiness of the controls after the first game, but learn
+those properly and you'll notice that they work well)
+
+
+----------------
+Balls' WWW pages
+----------------
+
+All new game levels are added to Balls' WWW pages. There are also links
+in which you can download the levels to your computer.
+If you have made a level and want it to be in list just send email
+to me.
+
+Worldwide map records are also found from the pages.
+You can also copy records to your computer and see how they have been
+made and then you can try to get better record.
+If you have made a better records than in WWW pages then send me email
+which must include:
+1. Your name
+2. As attachment : ".rep" and ".rec" -files from specified record
+   (files can be found from Balls' MAPS directory)
+
+
+----------
+Map making
+----------
+
+There are 12 levels and more of them are still needed. You can
+make and distribute levels by yourself.
+If your levels are good quality you can also contact me with
+email and thus you get your levels with Balls' next version.
+There is a list of all levels made to game in Balls' WWW pages 
+and links in which you can download them. If you want your
+level to list then email me.
+
+In order to make level you need 3D-studio or some other 3d-modelling
+program which can save in 3DS format (as Lightwave, etc.).
+Or you can get from Internet a compiler which will convert your
+modellers files to 3DS format. There are many compilers and probably
+for almost all favourite 3d-modelling programs. But easiest way is to
+use 3D-Studio Max because I have made a easy compiler for it which
+direcly makes files used by the game.
+Level making instructions can be found from file MAKEMAPE.TXT.
+
+Also remember to include all new textures with your level, when
+you send it to me. Use ".MAX" format if possible so I can
+edit it, if it has problems or it is unoptimimal. And with newest
+versions of the game old level files may not work because engine 
+develops continuously. When you use ".MAX" format I can recompile
+your level easily when new version of the engine comes and you have
+not to send your level for me again and again. And ofcourse if you
+don't use 3D Studio you should save as ".3DS" format if possible.
+
+Free Paint Shop PRO 5 suits very weel to textures and background pictures
+drawing.  You can copy it to you from MBNET (www.mikrobitti.fi). Ofcourse
+if you already own some commercial drawing program like Photoshop use it.
+Textures' size can be 256x256, 128x128, 64x64, 32x32 or 16x16. Background
+picture recommended size is 256x256. Textures' should be saved as 256 colors
+and background picture can be saved in truecolor as well.
+
+
+--------
+Versions
+--------
+
+v0.11
++ Text drawing rutines
++ More accurate timer (0.1sec)
++ BMPs are saved in RLE-packing (reduces the size of the packet)
+
+v0.2
++ Colliding/moving rutine has been fixed (works better on rotating and
+  close to each other objects)
++ The pathbug of the points/lights has been fixed
++ Texts are scaled depending to the screen (bugfix)
++ Numerous text-informartions ("Best time", "level completed" etc.)
++ Mouse button won't bring the popup-menu anymore (mouse can be used
+  better if needed)
++ You can get back to the starting menu from the game (ESC or by playing
+  all levels through)
++ F12 quickquit
++ "Fadeout" to the end of the levels
++ Fps-meter back (now you can see the average fps also)
++ Instructions to make your own levels (MAKEMAP.TXT). Only in finnish at
+  this version.
+
+v0.3
++ Level loading rutines (makes own levels possible)
++ Single map -mode
++ Levels transferred to their own directory (MAPS)
++ Minor bug fixes
+
+v0.4
++ Again a more accurate timer (0.01sec)
++ Backgrounds have been improved (loopapble from the edges)
++ Top scores -menu works now
++ Setup -menu works now
++ ... and all of the other menus work now completly
++ New level (now 5)
+
+v0.5
++ Windows icon
++ Colliding rutines of the ball are improved (rotating objects work 
+  better)
++ MIDAS-soundlibrary added for the sounds
++ Sound effects
++ Musics (argh... few years old...)
++ Minor bugs fixed
++ New map (now 6)
++ Single map -option works now more than 13 levels, now there may be 
+  39 levels on the screen.
+
+v0.6
++ 3D-ENGINE'S v3.5 completed:
+  + Objects are drawn as strips instead of single polygons. Fastens 
+    engine dramatically (about 30% ++)
+  + Coordinates of the vertexes and normals which are near to each 
+    other changed to same -> specular-reflections looks better and
+    there won't be any holes between the objects anymore.
+  + Optimization: Reduction of the additional vertexes/tvertexes from
+    the objects.
+  + Object's ADDSPEED-ability (makes bouncing floors / speedarrows 
+    possible)
+  + "MAKEMAP.EXE" compiler's new version. Old 3DOs won't work anymore,
+    and they must be converted again. (that means your own levels)
++ Rotating objects are refreshed every tic. (now it won't go through 
+  easily)
++ The "waves" of the start-menu works now in equal speed and height 
+  despite the 3d-speed.
++ WHOOPS: I forgot (too hard) topscores on the previous version, now 
+  emptied.
+
+v0.9
++ Game completation thing... (when you pass-through all levels)
++ 3D-engine rotation/scaling optimizations (extra matrixes are not
+  calculated -> considerable faster when there are lots of objects)
++ Fixed a bug in ADDSPEED object and detailed ADDSPEED-command 
+  (makemap.txt)
++ 3D engine's route things fixing:
+  + Fixed a bug in object's and light's route routines
+  + Object's and light's route wait, angles, and changing velocities
+  + When level begins at start ("R"-key) also object's route locations are
+    resetted.
+  + Now diamonds can travel through routes (like other objects).
++ Makemap.exe has been optimized (twice as fast but still SLOW)
++ Detected a bug in specular lights with AMD/DX6.1 combination.
+  This bug is caused by a DirectX driver problem. Because of it
+  there are two specular modes from which to choose. One normal
+  and if it won't work (= white screen) then there's also other
+  alternative mode (this is why now specular is off by first start 
+  time)
++ New level (now 7)
++ SETUP-settings are saved
++ Bug fixed: BEST-TIME resetting between levels (records 'transfered'
+  from level to level)
++ Bug fixed in menus (exitted game in wrong locations) 
++ Small bug fixed in FPS calculators
++ Replays and "Best-Time"-REPLAY saving
++ From TOP-SCORES menu you can watch "BEST-TIME"-REPLAYs
++ Key changing to SETUP menu
++ Levelmenu (Restart level/View replay/Quit to menu/Continue to next)
++ English documents (old 0.6 version)
+
+v1.0
++ New 3d engine v4.0 (bug fixing and better materials, groups, objects, etc, 
+  fullscene antialias and better extendability)
++ 5 new levels (now total 12)
++ Name letters to Besttime (finally)
++ Worldwide TOP-SCORE tables to WWW pages
++ New musics
++ New sound effects
++ Plenty of new textures and level backgrounds
++ Name's to levels
++ Mainmenu improved
+  + Movement has been speed up
+  + Cooler appearance 
+  + No more level limitations. Now menus scroll
+  + You are now always returned to right position in menus
++ Old levels fixed and improved
++ Engine's "smoothing" bug fixed
++ Visibility distance increased (2000->3000)
++ New font draw routine (handles character widths) and detailed font (64x64)
++ Gamemenu improved
+  + "Return to game" option so you need not to restart the level
+  if you visit the menu
+  + Continue remains as option if you restart level after completing it
+  + Time won't elapse in menus (you can use it as pause)
++ Ball's colliding routine has been improved (with fast speed won't go
+  through walls anymore)
++ Now up to date english documents
+
+v1.01 [FINAL]
++ 24bit textures, now works with VOODOO/G400/G200 too. Also better image
+  quality.
+
+v1.02 [FINAL]
++ Now all textures really work on G400/G200 too. I have a G400 myself
+  so this patch is fully tested. 
++ Some updates in TXT-files.
++ Maps TRAPPED and CASTLECOASTER included.
++ Forgotten example map to 3d-studio now included. (MAP.MAX)
+
+
+Coming soon:
+* Balls 2. It will use my new Shatter3D-engine and Dx7. There will be lots
+  of new effects, maps and much more... News will be at my www-site.
+
+
+--------------------------------
+Producers of I've got some BALLS
+--------------------------------
+Designing: Sebastian Aaltonen
+Programming: Sebastian Aaltonen
+3d-models : Sebastian Aaltonen
+Textures: Sebastian Aaltonen, Jaakko and Jukka Tapio, Heikki Võisõnen
+Levels: Sebastian Aaltonen
+Finnish documents: Sebastian Aaltonen
+English documents: Ismo Horppu
+Sound effects: Tommi Lahtinen
+Musics: Tommi Lahtinen and Sebastian Aaltonen
+Betatesting: Andrei Stepanov and Sebastian Aaltonen
+
+Soundlibrary:
+MIDAS Digital Audio System 1.1.2
+Copyright 1996, 1997 Housemarque Inc.
+
+
+-----------------------
+If the game won't work:
+-----------------------
+
+1. Game crashes right in the beginning before any windows appear:
+Ensure that you have DirectX 6.0 or newer installed. Also old drivers 
+of the 3d-card and soundcard may prevent the game to work properly.
+
+2. Game crashes when I choose my 3d-card from the list but it works in 
+software RGB-emulation:
+You have propably out of date or somehow non-compatible DX-drivers. Update
+to the most recent version of your drivers and try again. If your 3d-card 
+is not mentioned in the 3d-card list (at the beginning of the TXT) then it 
+might be, that the game won't work on your card for some reason.
+
+3. Game crashes when I choose the sound card or when game/menu starts:
+Try choosing "No sound" from the SoundCard-menu in start up. If the game 
+works this way without sounds you may also try to choose "Never use 
+DirectSound" from Advanced-menu and then try if sounds would work.
+
+
+-------------
+Contact info:
+-------------
+
+EMAIL: seppo.j.aaltonen@kolumbus.fi
+
+SHATTERSTORM WWW-SITE:
+www.kolumbus.fi/seppo.j.aaltonen/shatter
+
+PS. Remember to send all your new ideas and possible bugs/faults found 
+from the game. Level ideas are extremely welcome and levels even more...
+
+

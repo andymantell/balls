@@ -1,0 +1,336 @@
+3D-engine v4.0   -   I've got some BALLS v1.02
+(C) Sebastian Aaltonen 1999     (SHATTERSTORM)
+----------------------------------------------
+
+This document discusses about making a level.
+
+
+--BACKGROUND--------------------------------------------------------------------
+
+I've got some BALLS' levels are made from 3d-models, which are
+made from polygons. To make your own levels you'll need a program
+which can make 3-dimensional polygonmodels.
+
+BALLS' 3d-engine uses it's own file format (.3DO). With the 
+converter delivered with the game (MAKEMAP.EXE) you convert levels
+you have made with your 3d-modeller to format that engine uses.
+
+At this moment there is only a converter for propably the most
+common 3d-modeller, 3D Studio. The converter has been designed for
+3DSMAX versions 1/2/2.5 but it may work with others as well. The
+converter uses 3DSMAX's ASE-asciiformat.
+
+If you own some other 3D-modeller which saves to it's own ascii-
+format, could you send few example modelfiles so that I could make a
+converter for that program also.
+
+If your 3d-modeller can save to commonly used .3DS-format, then
+you can make your own levels but you'll have to send those 
+levels to me first so I can convert them to appropriate format.
+
+
+-- 1. From here it all begins --------------------------------------------------
+
+This instructions about making a level have been designed for 3D Studio MAX.
+If you want to make levels with other programs you'll have to wait for new
+converters to come out or you'll have to send your level to me in .3DS-format:
+
+NOTICE!
+3D-Studio MAX can not load RLE-packed BMP-pictures so you'll have to convert
+them to normal BMP-pictures. For this purpose one of the best programs is
+Paint Shop Pro (shareware). You can load the pictures one at the time and save
+them to normal BMP-files or you can use batch-conversion tool. If you don't
+change your pictures 3d Studio says "FILE NOT FOUND" when you open the picture
+and it won't show it. In practice you may use 3d Studio with RLE-packed pictures
+but you won't see them when you are making the level. The game can use both file
+formats.
+
+I assume that you already know the basis for 3d Studio MAX and I won't teach
+them in this part.
+
+When you are making a level you should use as simple objects as possible and
+polygon count should be in a completed level about 1000, of course that 
+depends from the size of the level. If your level is much larger than normal
+you may use more polygons. (2000++)
+
+You can see the levels Polygon/vertex count from menu:
+FILE -> SUMMARY INFO.
+You'll see polygon count from "Mech totals - Faces".
+
+NOTICE!
+There can't be more than 2000 polygons or vertexs in a SINGLE object.
+
+You'll get started easiest by editing "map.max" example level...
+
+
+-- 2. Materials ----------------------------------------------------------------
+
+When you have made few objects to your level you'll propably want to see how
+does your level looks like with textures.
+
+From menu TOOLS -> MATERIAL EDITOR you'll get into the material editor where
+all materials are made.
+
+Making a new material:
+1. Choose an empty material (ready).
+2. Change "Ambient" to completely black (from basic parameters)
+3. Change "Diffuse" to completely white
+4. Click MAPS and choose diffuse (click on NONE)
+5. Choose "Bitmap" (in a sidemenu New/All) and press OK
+6. Click "Bitmap parameters - Bitmap"
+7. Go to the directory where BALLS is and choose a texture (BMP).
+   (with "View..." button you may watch textures) and then press OK.
+8. Put "Show map in viewport" on. (that cubebutton on the controlbar)
+9. Assign your material to your level (third button on the controlbar)
+
+Special things for materials
+----------------------------
+Glow:
+"BASIC PARAMETERS - AMBIENT"
+If you'll change ambient color from black to something else the 
+object will glow that color in the game even if it wasn't in a light.
+
+Object's color:
+"BASIC PARAMETERS - DIFFUSE"
+If you'll chage diffuse color from white something else then object
+will be colored with that color. Fully black objects won't take effect
+from lights.
+
+2-sided	
+"BASIC PARAMETERS - 2-SIDED"
+You may make 2-sided objects when you choose this. Two sided objects
+every polygon will be drawn from both sides but colliding rutines will
+work only from the other side so avoid these.
+
+Alpha Blending: (transparency)
+"EXTENDED PARAMETERS - OPACITY - TYPE"
+"Filter" means that the object isn't transparent.
+With "additive" you'll get transparency which brightens the color.
+With "subtractive" you'll get transparency which darkens the color.
+
+
+-- 3. Lights -------------------------------------------------------------------
+
+Without lights you won't see anything in the game so you'll have to use
+them.
+
+Basic light:
+1. Create - Lights - Omni
+2. Adjust the color from the color button
+3. Adjust the size from the "shadow parameters - size"
+   Size 10000 means primary light which reaches everywhere and it won't fade.
+4. Adjust the size of the glow from "shadow parameters - raytracebias"
+   0.2 = normal size, 0 = no glow, 1 = 5X size etc...
+5. Place your light to proper place
+
+
+Moving light:  (read the "Special Objects" part)
+"MOV=XXYY","SPD=?"
+The point will move along certain path. The path is made with POINTS. Two
+first numbers (MOV=XXYY) means the number of path and the rest two means
+first routepoint where the point will go.
+SPD defines the speed of the moving light.
+For example:
+MOV=0301_SPD=5    - The point will move along path 3 and it's speed is 5.
+
+
+-- 4. Special objects ----------------------------------------------------------
+
+In BALLS there are few special object types which you'll have to use. All
+special types are written to objects NAME and they are separated from each
+other with _ -mark.
+
+Rotating object:
+"ROX=?","ROY=?","ROZ=?"
+Object rotates in different rotating planes and rotating speeds.
+for example ROX=5  - object will rotate along x-plane in a speed of 5.
+            ROZ=-3 - object will rotate backwards along z-plane in a speed
+                     of 3.
+
+Speed increasing object (trampolines and speedarrows etc...):
+"ADS=XXYYZZ"   (fast speed)
+"ADs=XXYYZZ"   (10 x slower speed)
+Gives speed for the ball to a certain direction.
+XX is speed.
+YY is angle (vertical), so that: 00= < 20= \/ 40= > 60= /\  (values 0-79)  
+ZZ is angle (horizontal), so that: 00=DOWN 40=HORIZONTAL 80=UP  (values 0-80)  
+For example:
+ADS=100080 - Object gives speed to the ball sraight upward		
+
+Penetratable object:
+"NOCOL"
+The ball will go through these objects like they did'nt exist. NOCOL objects won't
+affect balls behaviour in any way.
+
+Special object: (don't use with NOCOL. Only 1 for each object)
+"SP?"
+A special ability of object, like:
+SP2  -  Gate, which turns the ball to normal.
+SP3  -  Gate, which turns the ball to red.
+SP4  -  Gate, which turns the ball to yellow.
+SP5  -  Gate, which turns the ball to blue.
+SP6  -  Gate, which turns the ball to green.
+
+Moving object:
+"MOV=XXYY","SPD=?"
+The object will move along a certain path. The path is made with POINTS.
+Two of the first numbers (MOV=XXYY) means the path's number and the rest
+two means the routepoint where the object will first go.
+SPD - value gives the travelling speed to object.
+For example:
+MOV=0301_SPD=5  - Object will move along route 3 and it's speed is 5.
+
+
+-- 5. Points -------------------------------------------------------------------
+
+Every special item, the starting place of the ball and routepoints are
+placed with POINT-object type. (CREATE - HELPERS - POINT)
+
+The type of the points depends from their name:
+START      - The starting point of the ball
+DIA        - Collectable diamonds
+ROU=XXYY   - Routepoint:  XX=route's number, YY=the number of the point
+RWT=?      - Routepoint's waiting time (60 = 1 second)
+
+for example
+ROU=0402_RWT=120  - Route 4's second routepoint. At that point the object
+                    will stop for two seconds.
+
+
+Moving point:  (read the specialobjects part)
+"MOV=XXYY","SPD=?"
+The point will move along a certain path. The path is made with POINTS.
+Two of the first numbers (MOV=XXYY) indicates the paths number and the
+rest of the two means the routepoint where the the point will first go.
+SPD defines the speed of the point.
+For example:
+MOV=0301_SPD=5   - The point moves along the route 3 and it's speed is 5.
+
+
+-- 6. Background ---------------------------------------------------------------
+
+In the game's levels there is a background picture which is "rolled" in
+the background.
+
+This is how you do a background:
+1. First make a basic material where you'll load a BMP as a diffuse. (chapter 2)
+2. From main menu click RENDERING - ENVIROMENT
+3. Click "Enviroment map" box. (NONE)
+4. Set BROWSE FROM "Mtrl editor" and choose background from the 
+   background's BMP menu. (there is a green box in front of it)
+5. Choose INSTANCE from the next question. (and OK)
+
+
+-- 7. Optimizing ---------------------------------------------------------------
+
+I mentioned about the maximum recommendation of 1000 polygons in the first
+part. Of course it might have happened that your level has exceeded this 
+limit. And even if it hadn't is optimizing always a good thing to do.
+
+With "File - Summary info" you may check your level's polygon count. It can
+be seen from "Mesh totals - Faces".
+
+Use "Modify - Optimize" to every object. You can adjust optimize's effect by
+increasing face/edge -thresh's value. The higher the value, the less details
+will be left after the optimize so it is wise to try different values to find
+the best possible alternative.
+
+After the Optimize objects texture coordinates will go nuts so use "Modify -
+UVW-mapping" to every optimized object to return texture coordinates in place.
+"Box-mapping" is the best alternative in most cases.
+
+You should use "EDIT MESH" to objects and with it delete faces which won't be
+seen in the game like bottom faces of the level.
+
+NOTICE! Don't make route for ball by squeezing boxes to none but if you want
+thin levels then delete BOX's bottom and side faces with "EDIT MESH" and leave
+only the topface. (remember to use 2-sided texture)
+
+NOTICE! The ball will bounce only from the other side of the faces even if 
+they were 2-sided textured. If you want to flip faces "working" side then 
+the change may be done with NORMAL-tool and selecting "FLIP NORMALS".
+
+
+-- 8. Saving in .ASE-format ----------------------------------------------------
+
+The converter (MAKEMAP.EXE) can read only 3d-models in ASE-format (for now). 
+So you'll have to export your 3d-model to ASE-format.
+
+(Remember always to save your level normally to MAX-format too, because
+3d Studio can't load .ASEs...)
+
+
+This is how you do it:
+1. File - Export
+2. Choose ASE-format (Ascii Scene Export)
+3. Go to BALLS' directory
+4. Write your level's name and press OK
+5. ASCII-export menu will pop up, mark (ONLY) the following:
+  - Mesh Definition
+  - Materials
+  - Mapping Coordinates
+  - Geometric
+  - Lights 
+  - Helpers
+  - Use keys
+6. Press OK when you are ready.
+
+
+-- 9. MAKEMAP.EXE --------------------------------------------------------------
+
+Open DOS-prompt and go to the BALLS directory.
+Ensure that the levele you made is in the directory (level.ase).
+Now you can convert your level with MAKEMAP so that 3d-engine can use it.
+
+So write (in DOS):
+MAKEMAP level
+
+for example
+MAKEMAP cybercity
+
+Now there should come all kind of rubbish to screen for a while. Then
+copy your new level (level.3do) to maps-directory:
+COPY LEVEL.3DO MAPS
+
+Now you may try your level with SINGLE-MAP -option from main menu. But
+read forward...
+
+
+-- 10. IT WON'T WORK!!!!! ------------------------------------------------------
+
+It is possible that the game will crash when you'll try to start your 
+level. There may be multiple reasons. Here are few of the most common
+which I've noticed in my friends' levels.
+
+1. Texture's filenames may be only 8 letters long. 
+   (because of the DOS-converters)
+
+2. Textures must be in BMP-format, they must be box shaped and their
+   width and height must be in 2nd potency
+   for example 256x256, 128x128, 64x64, 32x32, 16x16... The maximum size of textures
+   is 256x256...
+    (these limitations are due the limitations of some 3d-cards but because
+     the game must work on as many 3d-cards as possible these limitations must
+     be followed)
+
+3. If your texture directory (=BALLS) is in a such place that in it's
+   directory is long filenames there may be some problems because of the
+   DOS-converters.
+
+4. Some of your objects may have more than 2000 polygons or vertexes -> use
+   optimize.
+
+5. There must be a START-place and at least one diamond in the level (DIA).
+
+6. Check if you use old-version of the MAKEMAP.EXE (or BALLS.EXE). Only use
+   MAKEMAP.EXE with the BALLS.EXE of the same version number. 
+
+... If you can't get started, then look "map.max" example level...
+
+
+--------------------------------------------------------------------------------
+EMail me if you didn't understand something, if something was wrongly explaned or
+if you didn't get your level working.
+
+EMAIL: seaalton@hotmail.com
+WWW-SITE: www.kolumbus.fi/seppo.j.aaltonen/shatter

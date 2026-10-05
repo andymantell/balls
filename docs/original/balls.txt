@@ -1,0 +1,481 @@
+I've got some BALLS v1.02      (3D-engine v4.0)   
+(C) Sebastian Aaltonen 1999    
+-----------------------------------------------
+
+Tõmõ peli on tõysin FREEWAREa, eli voit kopioida sitõ kuinka
+paljon haluat. Peliõ saa levittõõ kaikkia levityskanavia
+pitkin (kuten kokoelma CD:t, www-sivut ja purkit yms.) ilman
+erityislupaa. Peliin itsetehtyjõ kenttiõ ja muita lisõyksiõ
+saa levittõõ vapaasti, kunhan ei yritõ muuttaa pelin tekijõn
+nimeõ, tai muuten aiheuttaa haittaa pelin tekijõlle. Jos
+teet peliin lisõyksiõ, muista my÷s mainita, ettõ olet itse
+tehnyt ne, eivõtkõ ne ole minun tuotoksiani. Pelin avulla
+saa my÷s tuottaa rahaa ja sitõ saa kõyttõõ mainontaan yms...
+
+
+HUOM!
+BALLS vaatii DirectX 6.0:n toimiakseen, suositus on kuitenkin
+mahdollisimman uusi versio, koska uudemmissa versiossa on yleensõ
+paremmin optimoitu prosessorejen erikoiskõskykantojen (3dNow/SSE) kõytt÷.
+─lõ aja muita ohjelmia taustalla kun kõytõt peliõ, ne voivat
+aiheuttaa yllõttõviõ hidastuskohtauksia ja huonontaa nõin
+pelattavuutta huomattavasti. Erityisesti võltõ "fullscreen"
+MSDOS-kehoitteen kautta pelin kõynnistystõ, nõin voi hidastuksen
+lisõksi my÷s 3d-korttejen kanssa tulla ongelmia, koska jotkut
+(vanhat) 3d-kortit eivõt tunnista sen kautta ajettaessa kaikkia
+nõytt÷tilojaan. 
+
+
+3D-enginestõ
+------------
+
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ Tõmõ tieto on vanhentunutta. Uusin engineni on nyt
+ Shatter3D. Voit kõydõ katsomassa sen ominaisuuksia
+ WWW-sivuiltani.
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Tõmõ on uuden 3d-engineni ensimmõinen peli, ja toivottavasti pystyy 
+nõyttõmõõn jotain sen ominaisuuksista. Uusi 3d-engine on lõhes
+tõysin uudelleen ohjelmoitu (v2.0:sta) ja kõyttõõ DX6.1:n D3D-rajapintaa.
+
+Uutta enginessõ:
+* Selvõsti nopeampi ja koodi on muutenkin parannettua
+* Kõyttõõ "strippejõ" polygonejen piirtoon (nopeuttaa paljon)
+* Liikkuvat reaaliaikaiset valot
+* Valojen specular-heijastukset
+* Objektejen kulkureitit
+* Objektejen pivot-pointit yms. rotatointia varten
+* Kunnolliset t÷rmõysrutiinit raytracella
+  -> mahdollistaa põõllekkõiset kerrokset yms.
+* Kunnolliset kimpoamisrutiinit
+* Parempi materiaalejen kõsittely
+* Parempi objektejen kõsittely ja objektigroupit.
+* Ei objekti, textuuri, face, vertexi yms. rajoituksia,
+  vaan joustava muistinvaraus/vapautus.
+* Tuki eri kõskykannoille DX6.1:n D3D:n kautta (3dNOW! ja SSE)
+
+
+Lens flareja, vertex varjoja, %-lõpinõkyvyyttõ ja paria
+muuta hommaa en ole vielõ ehtinyt tehdõ enginen uuteen
+versioon. Flaret on ihan helppo homma, mutta varjot ja
+%-lõpinõkyvyys on vaikeampi, kun nyt en kõytõ enõõ omia
+valaistusrutiineja, vaan DX6:n sisõõnrakennettua rutiinia.
+Tõmõ sen takia, ettõ engine pystyy nõin tukemaan prosessorejen
+erikoiskõskyjõ (3dNOW!/SSE), ja tulevaisuudessa my÷s 3d-korttejen
+sisõisiõ py÷rityksiõ ja valojen laskentaa. 
+(...kunhan NV10 ja muut tulevat)
+
+Pelistõ saa otettua screenshotteja helpoiten painamalla
+PRINTSCRN-nappulaa. (Huom. Windowsin sisõõnrakennettu
+kuvankaappaus toimii vain nõytt÷korteilla, jotka sisõltõvõt
+my÷s 2d-ominaisuudet, eli EI Voodoo1/2:lla).
+
+Peliõ on testattu seuraavilla laitteilla ja ohjelmistoilla,
+ja se on toiminut moitteettomasti:
+
+Testatut prosessorit:
+AMD K6 (200)
+AMD K6-2 (300/333/350)
+Celeron (333/433/462)
+Pentium (166MMX/200/200MMX)
+Pentium II (262)
+Dual celeron (433*2)
+
+Testatut DX-versiot:
+DirectX 6.0
+DirectX 6.1
+DirectX 7.0
+
+Testatut kõytt÷jõrjestelmõt:
+Windows 95 (my÷s OSR2)
+Windows 98
+Windows 2000 (Release Canditate 1)
+
+Testatut keskusmuistimuistimõõrõt:
+32MB, 64MB, 128MB, 192MB, 256MB
+
+Testatut 3d-kortit: (kaikilla toiminut nopeasti ilman virheitõ)
+VOODOO 1 (4/6 MB)
+VOODOO 2 (8/12 MB)
+VOODOO 3 3000 (16 MB)
+VOODOO RUSH (6/8 MB)
+VOODOO BANSHEE (16MB)
+RIVA 128 (4MB)
+RIVA TNT (16MB)
+RIVA Ultra-TNT2 (32MB)
+MATROX G400 (16MB)
+S3 SAVAGE4 (16MB) 
+INTEL I770 (8MB)
+SOFTWARE RGB EMULATION            (OK, mutta todella hidas)
+
+Jos omistat jonkun 3d-kortin mitõ ei ole testattu tõssõ voisitko
+lõhettõõ mailia, ja kertoa miten peli toimii kortillasi. Lõhetõ
+my÷s koneen tiedot (prossu+muisti). 
+
+
+Pelin teosta ja muusta
+----------------------
+Tappo II:n viimeinen versio oli vihdoinkin saatu levitykseen ja
+aikaa piti olla seuraavaan peliin... mutta YO-kokeet veivõt
+suuren osan ajastani... Nyt kuitenkin on kaikki ohi ja minulla
+on vapaa-aikaa ihan mukavasti ohjelmointiinkin. Aluksi aioin
+lõhteõ tekemaan Tappo III:a, mutta sitten huomasinkin yhden
+asian: Joka kuukausi Mikrobitin MBNet-sivut ovat tõynnõ
+uusia luolalentely-rõiskintõpelejõ, ja lisõõ on tulossa...
+Ehkõpõ kysyntõõ voisi olla my÷s muunlaisille peleille. Itse
+viime vuonna ihastuin peliin nimeltõ Actua Supercross. Se
+oli selvõsti erilainen muusta pelitarjonnasta, ja sisõlsi
+loistavia ennennõkemõtt÷miõ ideoita. Olin heti koukussa.
+
+Toivottavasti my÷s BALLS on edes võhõn idearikkaampi kuin
+edellisien rõiskintõpelejeni kaarti: 
+Tappo II, Fight 2, Space Command 2, Tappo!, Cruiser, Fight, Star...
+(Itseasiassa Tappo III tuli melkein valmiiksi, se olisi
+ollut maailman ensimmõinen 3d-luolalentely... ... ...
+hei õlkõõ lõhettõk÷ mailia siitõ, ettõ miksi lopetin sen teon... 
+se tulee kyllõ, mutta parempana ja uudistettuna... sitten joskus... aargh...)
+
+
+----------------------------------
+I've got some BALLS pelin toiminta
+----------------------------------
+
+Menut
+-----
+Menuissa liikut nuolinõppõinten avulla ja valitset vaihtoehdot SPACE-napilla.
+Taaksepõin põõset siirtymõõn ESC:in avulla. Jos olet itse vaihtanut nõppõimiõ,
+niin kõytõt tietenkin mõõrittelemiõsi nõppõimiõ.
+
+Kun ensimmõisen kerran kõynnistõt pelin, menee menu automaattisesti SETUP-menun
+kohdalle. Vaihda asetukset ja nõppõimet haluamiksesi. Peli tallentaa asetukset,
+eikõ sinun tarvitse enõõ vaihdella niitõ tulevaisuudessa.
+
+
+Mainmenu
+--------
+START GAME	- Aloittaa pelin. Pelissõ pelaat lõpi kaikki 12 kenttõõ
+		  perõkkõin.
+SINGLE MAP	- Single map pelissõ valitset yhden kentõn ja voit pelata
+		  sitõ lõpi moneen kertaan. Tõmõ pelityyppi soveltuu
+		  kenttõennõtysten tekoon.
+SETUP		- Setup menu, josta voit sõõtõõ pelin asetuksia, sekõ
+		  vaihtaa nõppõimiõ.
+QUIT		- Lopettaa pelin ja menee takaisin Windowsiin.
+
+
+Setup Menu
+----------
+SPECULAR: OFF / ON(NORMAL) / ON(AMD FIXED)
+Laittaa valojen specular-heijastukset põõlle/pois. Jos omistat
+DX6.1:n ja AMD 3dNOW! prosessorin, niin valitse "AMD FIXED", muuten
+valitse "NORMAL". Jos koneesi 3d-kortti on liian hidas valitse
+"OFF", niin saat võhõn lisõõ nopeutta peliin.
+
+ANTIALIAS: OFF / FULLSCENE
+Laittaa antialiaksen põõlle. Tõmõ ominaisuus toimii vain uusimmilla
+3d-korteilla, ja niillõkin vain, jos ominaisuus on kytketty põõlle
+kortin ajureista. Fullscene antialiasointi vie todella paljon 3d-kortin
+tehoa ja nykyisistõ 3d-korteista vain tehokkaimmat pystyvõt edes
+jotenkin pelattavaan nopeuteen antialiasoinnin kanssa. 
+
+CONTROLS
+Vaihtaa nõppõinasetuksia. Asetukset saat takaisin perusasetuksiksi
+poistamalla ballsin hakemistossa olevan tiedoston "keys.dat"
+
+
+Miten pelaan BALLS:ia??
+-----------------------
+I've got some BALLS:ssa sinun tehtõvõnõsi on ohjata pientõ palloa
+lõpi vaaroja tõynnõ olevien kenttien. Kentõn lõpõistõksesi sinun
+on kerõttõvõ kaikki timantit. Kenttien lõpõisyssõ sinua auttavat
+erivõriset pallot, jotka saat kõytt÷÷si kulkemalla
+erivõrisistõ porteista. Eri palloilla on erilaiset erikoisominaisuudet.
+
+Pelin kontrollit:  (jollet ole itse vaihtanut asetuksia)
+Nuolinõppõimet - Kiihdyttõõ pallon vauhtia haluttuun suuntaan
+R              - Restart level (aloittaa kentõn alusta)
+SPACE          - ACTION-nappi, eli pallon erikoiskyvyt (hyppy/jarrutus yms...)
+ESC            - Pelistõ menuun 
+F2             - Vaihtaa grafiikka-asetuksia
+F12            - Quittaa windowsiin (pikalopetus)
+ALT+ENTER      - Kokoruutu/ikkunoitu grafiikkatila 
+
+Erivõriset pallot:
+Punainen: 200% nopeus
+Keltainen: Osaa hypõtõ (ACTION-napista)
+Sininen: Ampuu timantit sõhk÷llõ matkan põõstõ
+Vihreõ: Voi jarruttaa nopeasti ja leijua ilmassa (ACTION-napista)
+
+Erilaiset pallot saat kõytt÷÷si kulkemalla lõpi erivõrisistõ
+porteista, jotka vaihtavat pallosi võriõ. Pallon erikoiskyvyn
+voit aktivoida ACTION-napilla (normaalisti SPACE).
+
+Pallon ohjaaminen voi aluksi tuntua hankalalta, mutta siihen
+kyllõ tottuu ajan my÷tõ. Korjataanpa yleinen virheluulo:
+Sivunuolet EIV─T kõõnnõ pallon liikerataa, eikõ ylõnuoli kiihdytõ
+pallon nopeutta tai alanuoli jarruta palloa... vaan kaikki
+nuolinõppõimet toimivat samalla tavalla, eli LIS──V─T pallon
+nopeutta haluttuun suuntaan. On ihan normaalia, jos menetõt 
+hermosi pelin kontrollejen kanssa ensimmõisillõ koekerroilla -
+minulla on kokemusta asiasta. (joten õlõ lõhetõ mailia
+kontrollejen kankeudesta ekan pelikerran jõlkeen, vaan opettele
+ne kunnolla ja huomaat, ettõ ne ovatkin ihan toimivat)
+
+
+-----------------
+Ballsin WWW-sivut
+-----------------
+
+Ballsin WWW-sivuille tulevat kaikki uudet peliin tehdyt kentõt.
+Sivuilla on linkit, joista voit kopioida kentõt omalle koneellesi.
+Jos itse olet tehnyt kentõn ja haluat sen listaan, niin lõhetõ
+emailia minulle.
+
+Kenttien maailmanlaajuiset ennõtykset l÷ytyy my÷s samoilta
+sivuilta. Sivuilta voit kopioida itsellesi maailman ennõtykset
+Ballsin kentissõ ja katsoa miten ne on tehty ja sitten itse
+yrittõõ pistõõ paremmaksi. Jos itse olet tehnyt paremman ennõtyksen,
+kun www-sivuilla, niin lõhetõ emailia minulle. Mailissa on oltava:
+1. Nimesi
+2. Liitetiedostona ".rep" ja ".rec"-tiedosto kyseisestõ ennõtyksestõ
+   (tiedostot l÷ytyvõt Ballsin MAPS-hakemistosta)
+
+
+---------------
+Kenttien teosta
+---------------
+
+Kenttiõ on tõssõ versiossa 12 erilaista, ja niitõ tarvitaan
+vielõ runsaasti enemmõn. Kenttiõ voit tehdõ ja levittõõ itse.
+Jos kenttõsi ovat laadukkaita, voit my÷s ottaa minuun
+yhteyttõ Emaililla ja saada nõin kenttõsi mukaan BALLS:in seuraavaan
+versioon. Balls:in kotisivuilla on lista kaikista peliin tehdyistõ
+kentistõ ja linkit, joista ne voi kopioida omalle koneelle. Jos
+tahdot kenttõsi listaan, niin e-mailaa minulle. 
+
+Kentõntekoon tarvitset 3D-Studio:n tai jonkun 3d-mallintajan,
+joka pystyy tallentamaan 3DS-muodossa (kuten Lightwave yms.).
+Tai sitten voit netistõ hakea kõõntõjõn, jolla saat 3d-mallintajasi
+tiedostot kõõnnettyõ 3DS-muotoon. Kõõntõjiõ on useita, ja
+varmaan lõhes kaikille suosituille 3d-mallintajille. Helpoiten
+selviõt kuitenkin 3D-studio MAX:lla, koska sille olen tehnyt
+helpon kõõntõjõn, joka tekee suoraan pelin kõyttõmiõ tiedostoja.
+Kentõnteko-ohjeet l÷ydõt tiedostosta MAKEMAP.TXT.
+
+Muista sisõllyttõõ kaikki uudet textuurisi kenttõsi mukaan. 
+Jos lõhetõt kenttõsi minulle, niin kõytõ mielellõõn ".MAX" muotoa, 
+ettõ põõsen editoimaan sitõ, jos siinõ on virheitõ, tai se on
+epõoptimaalinen. My÷s uusissa versioissa eivõt pakosti toimi vanhat
+kõõnnetyt kenttõtiedostot, koska engine kehittyy koko ajan. Kun kõytõt
+".MAX"-muotoa voin kõõntõõ kenttõsi helposti aina uudelleen, kun
+uusi versio enginestõ tulee, eikõ sinun tarvitse lõhettõõ kenttõõsi
+minulle aina uudelleen. Tietenkin jos et kõytõ 3DStudiota, niin tallennat
+mieluiten ".3DS"-muotoon.
+
+Textuurejen ja taustakuvien piirtoon soveltuu hyvin ilmainen Paint Shop PRO 5.
+Sen saat vaikka kopioitua itsellesi MBNetistõ (www.mikrobitti.fi). Tietenkin
+jos omistat jo jonkun kaupallisen piirto-ohjelman kuten Photoshopin,
+niin kõytõ ihmeessõ sitõ. Textuurejen koko saa olla 256x256, 128x128, 64x64,
+32x32 tai 16x16. Taustakuvan suositeltava koko on 256x256. Textuurit
+kannattaa tallentaa 256-võrisinõ, taustakuvan voit my÷s tallentaa tõysvõreillõ.
+
+
+-------
+Versiot
+-------
+
+v0.11
++ Tekstinpiirtorutiinit
++ Aikalaskureiden tarkennus (0.1s)
++ BMP:t on tallennettu RLE-pakkauksella (pienentõõ paketin kokoa)
+
+v0.2
++ T÷rmõys/liikkumisrutiinia on korjattu (toimii paremmin py÷rivissõ
+  ja toisiaan lõhekkõin olevilla objekteilla)
++ Pisteiden/valojen reittibugi korjattu
++ Tekstit skaalataan ruudun mukaan (bugifix)
++ Lukuisat teksti-ilmoitukset ("best time","level completed" yms.)
++ Hiiren nappi ei enõõ tuo popup-menua (hiirtõ voidaan hy÷dyntõõ
+  tarvittaessa paremmin)
++ Pelistõ põõsee takaisin alkumenuun (ESC tai lõpipõõsy)
++ F12 Pikalopetus
++ "Fadeout" kenttien loppuun
++ Fps-mittari takas (nyt my÷s nõkee keskimõõrõisen FPS:n)
++ Kentõnteko-ohjeet (MAKEMAP.TXT)
+
+v0.3
++ Kentõnlatausrutiinit (mahd. lisõkentõt/omat kentõt)
++ Single Map -moodi
++ Kentõt siirretty omaan hakemistoonsa (MAPS)
++ Korjattu pieniõ bugeja
+
+v0.4
++ Taas aikalaskureiden tarkennusta (0.01s)
++ Taustakuvia on parannettu (reunoilta "toistuvia")
++ Top scores -menu toimii
++ Setup-menu toimii
++ ... ja muutenkin menut toimii nyt tõysin
++ Uusi kenttõ mukaan (nyt 5)
+
+v0.5
++ Windows ikoni
++ Pallon t÷rmõysrutiinejen korjailua 
+  (py÷rivõt kappaleet toimii paremmin)
++ MIDAS-õõnikirjasto lisõtty õõniõ varten
++ ─õniefektit
++ Musiikit (aargh... pari vuotta vanhoja...)
++ Pieniõ vikoja korjailtu
++ Uusi kenttõ (nyt 6)
++ Kentõnvalinta (single map) toimii nyt my÷s yli 13 kentõllõ,
+  nyt ruutuun mahtuu 39 kentõn nimeõ.
+
+v0.6
++ 3D-ENGINEN v3.5 valmis:
+  + Objektit piirretõõn strippeinõ yksittõisten polyjen
+    sijaan. Nopeuttaa enginea huomattavasti (noin 30% ++)
+  + Lõheisten vertexejen koordinaatit ja normaalit samoiksi ->
+    Specular-heijastukset nõyttõõ paremmilta, ja ei tule rakoja
+    objektejen võliin.
+  + Optimointia: Karsitaan ylimõõrõiset vertexit/tvertexit
+    objekteista.
+  + Objektin ADDSPEED-kyky (mahd. pompauttavat lattiat / vauhtinuolet)
+  + "MAKEMAP.EXE" kõõntõjõn uusi versio. Entiset 3DO:t ei enõõ
+    toimi, ja ne pitõõ kõõntõõ uusiksi. (siis omatekoiset kentõt)
++ Py÷rivõt kappaleet põivitetõõn joka tic. (nyt ei mene lõpi helposti)
++ Alkumenun "laineet" toimii nyt 3d-nopeudesta riippumatta
+  samalla nopeudella ja saman korkuisena.
++ UPS: unohtui (liian kovat) topscoret mukaan edelliseen,
+  nyt tyhjennetty.
+
+v0.9
++ Pelin lõpipõõsy homma... (kun põõsee kaikki kentõt lõpi)
++ 3D-enginen rotaatio/scaalaus-optimoinnit (ei lasketõ ylimõõrõisiõ
+  matriiseja -> huomattavasti nopeampi, kun objekteja on paljon)
++ Korjattu bugit ADDSPEED-objekteissa, sekõ tarkennettu ADDSPEED-
+  kõskyõ (makemap.txt).  
++ 3D-enginen reittihommien korjailua:
+  + Korjattu bugi objektejen ja valojen reittirutiineissa
+  + Objektejen ja valojen reittiodotus, reittikulmat ja
+    muuttuvat reittinopeudet
+  + Kun kenttõ alkaa alusta ("R"-nappi), niin my÷s objektejen
+    reittipaikat nollataan
+  + Nyt timantit voivat liikkua reittejõ pitkin (kuten muutkin objektit).
++ MAKEMAP.EXE on optimoitu. (tuplasti nopeempi, mutta silti HIDAS)
++ Specular valoissa havaittu bugi AMD/DX6.1 -yhdistelmõllõ. Bugi
+  johtuu DX-ajurejen viasta. Sen takia SETUP-menussa on kaksi
+  vaihtoehtoista specular-moodia, toinen normaali, tai jos se ei
+  toimi (=valkoinen ruutu), niin my÷s toinen vaihtoehtoinen moodi. 
+  (tõmõn takia nyt vakiona specular=OFF ekalla kõynnistyskerralla)
++ Uusi kenttõ (nyt 7)
++ SETUP-asetukset tallennetaan  
++ Bugi korjattu: BEST-TIME:n nollaus kenttien võliin (ennõtykset 
+  siirtyivõt kentõstõ toiseen)
++ Bugi korjattu menuissa (quittasi võõrissõ paikoissa)
++ Pieni bugi korjattu FPS-laskureissa
++ Replay:t ja "BEST-TIME"-REPLAYn talletus
++ TOP-SCORES menusta voi katsella "BEST-TIME"-REPLAYt
++ Nõppõinten vaihto SETUP-menuun
++ Kenttõmenu (Restart level/View replay/Quit to menu/Continue to next)
++ Englanninkieliset dokumentit (vanhat 0.6 versiot)
+
+v1.0
++ Uusi 3d-engine v4.0 (bugifixausta ja paremmat materiaalit, groupit,
+  objektit yms. + fullscene antialias ja parempi laajennettavuus)
++ 5 uutta kenttõõ (nyt yhteensõ 12)
++ Besttime:een nimikirjaimet!!! (vihdoinkin)
++ Maailmanlaajuiset TOP-SCORE taulut WWW-sivuilla
++ Uudet musiikit
++ Uudet õõniefektit 
++ Runsaasti uusia textuureita ja kenttien taustakuvia
++ Nimet kentille
++ Põõmenun parantamista
+  + Liikkumista on nopeutettu 
+  + Siistimpi ulkoasu
+  + Ei enõõ kenttõmõõrõrajoituksia. Nyt menut scrollaa
+  + Menuissa palataan aina oikeaan kohtaan
++ Vanhoja kenttiõ paranneltu ja korjailtu
++ Enginen "smooth":in bugi korjattu
++ Nõk÷etõisyyttõ lisõtty (2000->3000)
++ Uusi fontinpiirtorutiini (ottaa merkin pituudet huomioon) ja tarkempi fontti (64x64)
++ Pelimenun parannus
+  + "Return to game" valinta, ei enõõ tarvitse aloittaa kenttõõ
+    alusta, jos kõy menussa
+  + Continue jõõ vaihtoehdoksi, jos restarttaa kentõn lõpõistyõõn
+  + Aika ei kulu menussa (sitõ voi kõyttõõ nyt pausena)
++ Pallon t÷rmõysrutiinia parannettu (kovassa vauhdissa ei mene lõpi)
++ Nyt ajantasalla olevan englanninkieliset dokumentit
+
+v1.01 [FINAL]
++ 24bittiset textuurit, nyt toimii my÷s VOODOO/G400/G200 -korteilla. My÷s
+  parempi kuvanlaatu.
+
+v1.02 [FINAL]
++ Noniin nyt toimii ihan kaikki textuurit my÷s G400/G200:lla. Minulla on
+  nykyõõn G400 itsellõni, eli tõmõ põivitys todella toimii...
++ Tekstejõ paranneltu.
++ Kentõt TRAPPED ja CASTLECOASTER mukana.
++ Unohtunut esimerkki kenttõ mukana 3d-studiolle (MAP.MAX)
+
+
+Tulossa: 
+* Balls 2, kunhan saan uuden Shatter3D peliengineni valmiiksi. Katso uudet
+  ominaisuudet www-sivuilta ("coming soon"-alueelta). Uusi engine kõyttõõ
+  DX7:aa ja kaikkia sen uudistuksia hy÷dykseen.
+
+
+-----------------------------
+I've got some BALLS:n tekijõt 
+-----------------------------
+Suunnittelu: Sebastian Aaltonen
+Ohjelmointi: Sebastian Aaltonen
+3d-mallit: Sebastian Aaltonen
+Textuurit: Sebastian Aaltonen, Jaakko ja Jukka Tapio, Heikki Võisõnen
+Kentõt: Sebastian Aaltonen
+Suomenkieliset dokumentit: Sebastian Aaltonen
+Englanninkieliset dokumentit: Ismo Horppu
+─õniefektit: Tommi Lahtinen
+Musiikit: Tommi Lahtinen
+Betatestaus: Andrei Stepanov ja Sebastian Aaltonen
+
+─õnikirjasto:
+MIDAS Digital Audio System 1.1.2
+Copyright 1996, 1997 Housemarque Inc.
+
+
+------------------
+Jos peli ei toimi:
+------------------
+
+1. Peli kaatuu heti alussa, ennenkuin mitõõn ikkunoita tulee nõkyviin:
+Varmista, ettõ koneessasi on asennettuna DirectX 6.0 tai uudempi.
+My÷s 3d-kortin ja õõnikortin vanhentuneet ajurit voivat estõõ peliõ
+toimimasta.
+
+2. Peli kaatuu kun valitsen 3d-korttini valikosta, mutta toimii jos
+valitsen "RGB emulation"-valinnan:
+Sinulla on ilmeisesti vanhentuneet tai muuten epõyhteensopivat
+nõytt÷kortin DX-ajurit. Põivitõ uusimpiin ja kokeile uudelleen.
+Jos 3d-korttiasi ei ole 3d-korttilistassa (TXT:n alussa), niin
+voi olla, ettõ peli ei jostain syystõ toimi 3d-kortillasi. (pitõisi
+toimia kaikilla uusilla korteilla, jossa on ainakin 4MB muistia)
+ 
+3. Peli kaatuu kun valitsen õõnikortin, tai kun peli/menu kõynnistyy:
+Kokeile valita SoundCard-kohdasta "No sound". Jos peli toimii nõin
+ilman õõniõ, niin voit my÷s kokeilla valita Advanced-kohdasta
+"Never use DirectSound" ja kokeilla toimisiko silloin õõnet.
+
+
+-------------
+Yhteystiedot:
+-------------
+
+MAIL: seppo.j.aaltonen@kolumbus.fi        
+
+SHATTERSTORM WWW-SIVUT: 
+www.kolumbus.fi/seppo.j.aaltonen/shatter
+
+
+PS. Muista lõhettõõ kaikki uudet ideasi ja mahdolliset pelistõ
+l÷ydetyt viat/bugit. Kenttõideat ovat erittõin tervetulleita,
+ja kentõt vielõ enemmõn...

@@ -1,0 +1,359 @@
+3D-engine v4.0   -   I've got some BALLS v1.02
+(C) Sebastian Aaltonen 1999     (SHATTERSTORM)
+----------------------------------------------
+
+Tõmõ dokumentti kõsittelee kentõn tekoa.
+
+
+--TAUSTAA-----------------------------------------------------------------------
+
+I've got some BALLS:n kentõt on muodostettu 3d-malleistõ, jotka on
+taas muodostettu polygoneista. Kenttien tekemiseen tarvitset siis
+ohjelman, joka pystyy tekemõõn 3-ulotteisia polygonimalleja.
+
+BALLS:n 3d-engine kõyttõõ sen omaa tiedostomuodoa (.3DO).
+Pelin mukana tulleella kõõntõjõllõ (MAKEMAP.EXE) voit kõõntõõ
+3D-mallinnusohjelmallasi tekemõt kentõt enginen ymmõrtõmõõn muotoon.
+
+Tõllõ hetkellõ valmiina on ainoastaan kõõntõjõ varmaankin yleisimmõlle
+3D-mallintajalle, eli 3D Studiolle. Kõõntõjõ on suunniteltu 3DSMAX
+versioita 1.0/2.0/2.5/3.0 varten, mutta voi toimia muillakin. Kõõntõjõ
+kõyttõõ 3DSMAX:n ASE-asciitallennusmuotoa.
+
+Jos omistat jonkun muun 3D-mallintajan, joka tallentaa omaan
+ascii-muotoonsa, olisitko ystõvõllinen ja lõhettõisit muutaman
+mallitiedoston, ettõ voisin tehdõ kõõntõjõn my÷s kyseiselle ohjelmalle.
+
+Jos 3d-mallintajasi pystyy tallentamaan yleisesti kõytetyssõ 
+3DS-muodossa, niin voit my÷s tehdõ kenttiõ, joudut vain lõhettõmõõn
+ne minulle ensin kõõntõmistõ varten.
+
+
+-- 1. Tõstõ se kaikki alkaa ----------------------------------------------------
+
+Nõmõ ohjeet kentõn teosta on suunniteltu 3D Studio MAX:ia varten. Jos tahdot
+tehdõ kenttiõ muilla ohjelmilla, joudut odottamaan uusien kõõntõjien tuloa,
+tai lõhettõmõõn tuotoksesi aluksi minulle 3DS-muodossa:
+
+HUOM!!!!!!!
+3d-studio MAX ei osaa ladata RLE-pakattuja BMP-kuvia, joten sinun tõytyy
+muuntaa ne tavallisiksi BMP-kuviksi. Tõhõn tarkoitukseen yksi parhaista
+ohjelmista on Paint Shop Pro. Voit ladata kuvat yksi kerrallaan ja
+tallentaa ne normaaleiksi BMP-tiedostoiksi, tai kõyttõõ batch-conversion
+ty÷kalua. Jos et muuta kuvia, niin 3d-studio valittaa "FILE NOT
+FOUND", kun avaat kuvan, eikõ nõytõ kuvaa. Kõytõnn÷ssõ voit kõyttõõ
+3d-studiota RLE-pakatuillakin kuvilla, ne eivõt vaan sitten nõy
+kun teet kenttõõ. Peli osaa kõyttõõ kumpiakin tiedostomuotoja.
+
+Oletan ettõ osaat jo perusteet 3d Studio MAX:sta, enkõ opeta niitõ tõssõ
+osiossa.
+
+Kentõnteossa kannattaa kõyttõõ mahdollisimman yksinkertaisia objekteja ja
+polygonimõõrõ kannattaa valmiissa kentõssõ olla maksimissaan noin 1000-2000,
+riippuen tietenkin my÷s kentõn koosta. Jos kenttõsi on selvõsti suurempi,
+kuin normaalit, niin voit kõyttõõ my÷s enemmõn polygoneja.
+
+Kentõn ja yksittõisten objektejen polygoni/vertexi -mõõrõt nõet helpoiten
+menusta FILE -> SUMMARY INFO.
+Polygonimõõrõn nõet "Mesh totals - Faces" kohdasta.
+
+HUOM!
+Yhdessõ objektissa ei saa olla enempõõ kuin 2000 polygonia tai vertexiõ.
+
+Helpoiten põõset alkuun katsomalla "map.max" esimerkkikenttõõ...
+
+
+-- 2. Materiaalit --------------------------------------------------------------
+
+Kun olet tehnyt muutamia objekteja kenttõõsi, haluat varmaat jo nõhdõ miltõ
+kenttõsi nõyttõisi textuureiden kanssa.
+
+Menusta TOOLS -> MATERIAL EDITOR põõset materiaali-editoriin, jossa kaikki
+materiaalit tehdõõn.
+
+Uuden materiaalin teko:
+1. Valitse tyhja materiaali (valmiina).
+2. Muuta "Ambient" tõysin mustaksi  (basic parameters kohdasta)
+3. Muuta "Diffuse" tõysin valkoiseksi
+4. Clikkaa alhaalta MAPS, ja sieltõ valitse diffuse (klikkaa siitõ: NONE)
+5. Valitse "bitmap" (sivumenussa: New/All) -> ja paina OK
+6. Clikkaa "Bitmap parameters - Bitmap"
+7. Mene BALLS:n hakemistoon ja valitse sieltõ sopiva tekstuuri (BMP).
+   ("View..." napilla voit katsoa tekstuureja) -> ja sitten paina OK.
+8. Laita "show map in viewport" põõlle. (se kuutionappi ylõrivist÷ssõ)
+9. "Assign":aa materiaali kenttõsi objektiin (kolmas nappi rivist÷ssõ)
+
+Erikoishommat materiaaleille
+----------------------------
+Hohto:          
+"BASIC PARAMETERS - AMBIENT"
+Jos vaihdat ambient-võrin pois mustasta, niin pelissõ objekti loistaa
+kyseistõ võriõ, vaikka se ei olisikaan valossa.
+
+Objektin võri:          
+"BASIC PARAMETERS - DIFFUSE"
+Jos vaihdat diffuse-võrin pois valkoisesta, niin pelissõ objekti võrjõtõõn
+kyseisellõ võrillõ. Tõys-mustiin objekteihin eivõt valot vaikuta ollenkaan.
+
+2-puoleisuus:    
+"BASIC PARAMETERS - 2-SIDED"
+Voit tehdõ 2-puoleisia objekteja kun valitset tõmõn.Kaksipuoleisen objektin
+kaikki polygonit piirretõõn kummaltakin puolelta, mutta t÷rmõysrutiinit
+eivõt vielõ toimi kuin yhdeltõ puolelta. 
+
+Alpha Blending: (eli lõpinõkyvyys)
+"EXTENDED PARAMETERS - OPACITY - TYPE"
+FILTER-valinta tarkoittaa, ettõ objekti ei ole lõpinõkyvõ.
+ADDITIVE-valinnalla saat lõpinõkyvyyden, joka lisõõ võriõ (kirkastaa).
+SUBTRACTIVE-valinnalla saat lõpinõkyvyyden, joka tummentaa võriõ.
+
+
+-- 3. Valot --------------------------------------------------------------------
+
+Ilman valoja pelissõ ei nõe mitõõn, joten joudut kõyttõmõõn niitõ.
+
+Perusvalo:
+1. Create - Lights - Omni
+2. Sõõdõ võri kohdalleen color-napista.
+3. Sõõdõ valon koko "shadow parameters - size" -kohdasta.
+   Size 10000 tarkoittaa põõvaloa, joka yltõõ kaikkialle, eikõ heikkene.     
+4. Sõõdõ valon glow:n koko "shadow parameters - mapbias" -kohdasta
+   4.0 = normaali koko, 0 = ei glowwia, 20.0 = 5Xkoko yms... 
+  (UUTTA: tõmõ on muuttunut 0.9 versiosta)    
+5. Aseta valosi sopivaan paikkaan.
+
+
+Liikkuva valo:  (lue erikoisobjektit kappale)
+"MOV=XXYY","SPD=?"
+Valo liikkuu tiettyõ reittiõ pitkin. Reitti tehdõõn POINTTEJEN avulla.
+Kaksi ensimmõistõ lukua (XX) tarkoittavat reitin numeroa, ja loput
+kaksi (YY) tarkoittavat ensimmõistõ reittipistettõ, johon valo lõhtee.
+SPD - mõõrite antaa valon kulkunopeuden.
+esim. 
+MOV=0301_SPD=5   - Valo liikkuu reittiõ 3 pitkin ja sen nopeus on 5.
+
+
+-- 4. Erikoisobjektit -----------------------------------------------------------
+
+BALLSissa on muutama erikois-objektityyppi, jota joudut kõyttõmõõn.
+Kaikki objektejen erikoistyypit kirjoitetaan objektin NIMEEN,
+ja erotetaan toisistaan _ -merkillõ
+
+Py÷rivõ objekti:
+"ROX=?","ROY=?","ROZ=?"
+Py÷rivõn objektin eri py÷rimisakselit ja nõiden py÷rimisnopeudet.
+esim. ROX=5   - objekti py÷rii x-akselin suunnassa nopeudella 5.
+      ROZ=-3  - objekti py÷rii z-akselin suunnassa vastapõivõõn nopeudella 3.
+
+Vauhtia antava objekti (trampoliinit ja vauhtinuolet yms...):
+"ADS=XXYYZZ"   (nopea vauhti - soveltuu kimmottaviin tasoihin)
+"ADs=XXYYZZ"   (10 x hitaampi vauhti - soveltuu vauhtinuoliin)
+Antaa pallolle vauhtia tiettyyn suuntaan. 
+XX on nopeus.
+YY on kulma (vaakatasossa), niin ettõ: 00= < 20= \/ 40= > 60= /\  (arvot 0-79)  
+ZZ on kulma (pystytasossa), niin ettõ: 00=ALAS 40=VAAKA 80=YLÍS   (arvot 0-80)  
+esim.
+ADS=100080 - Objekti antaa pallolle suoraan yl÷spõin vauhtia nopeudella 10.		
+
+Lõpimentõvõ objekti:
+"NOCOL"
+Tõllõisten objektejen lõpi pallo menee, eivõtkõ ne vaikuta sen kõyttõytymiseen
+millõõn tavalla.
+
+Special objekti: (õlõ kõytõ NOCOL:n kanssa. Vain 1 per objekti)
+"SP?"
+Objektin joku lisõkyky, kuten:
+SP2  -  Portti, joka muuttaa pallon normaaliksi.
+SP3  -  Portti, joka muuttaa pallon punaiseksi.
+SP4  -  Portti, joka muuttaa pallon keltaiseksi.
+SP5  -  Portti, joka muuttaa pallon siniseksi.
+SP6  -  Portti, joka muuttaa pallon vihreõksi.
+
+Liikkuva objekti:
+"MOV=XXYY","SPD=?"
+Objekti liikkuu tiettyõ reittiõ pitkin. Reitti tehdõõn POINTTEJEN avulla.
+Kaksi ensimmõistõ lukua (XX) tarkoittavat reitin numeroa, ja loput
+kaksi (YY) tarkoittavat ensimmõistõ reittipistettõ, johon objekti lõhtee.
+SPD - mõõrite antaa objekti kulkunopeuden.
+esim. 
+MOV=0301_SPD=5   - Objekti liikkuu reittiõ 3 pitkin ja sen nopeus on 5.
+
+
+-- 4. Pisteet ------------------------------------------------------------------
+
+Kaikki erikoistavarat, pallon aloituspaikka ja reittipisteet merkitõõn
+POINT-objektityypillõ. (CREATE - HELPERS - POINT)
+
+Pisteiden tyyppi riippuu niiden nimestõ:
+START     - Pallon aloituspaikka
+DIA       - Kerõttõvõt timantit
+ROU=XXYY  - Reittipiste:  XX=reitin numero, YY=monesko reitin piste tõmõ on.
+RWT=?     - Objektejen odotusaika tõssõ reittipisteessõ (60 = 1 sekunti)
+RSP=?     - Objektejen nopeuskerroin tõssõ pisteessõ (100 = 100%, yms....)
+            oletuksena 100%, jollei mõõritetty.
+RXA=?     - Objektin kulmat reittipisteessõ (? = kulma asteina)
+RYA=?       oletuksena 0 astetta, ellei mõõritetty.
+RZA=?       (Nõiden avulla saat objektin kõõntymõõn reitin mukaan)
+
+Reitti pisteet:  (lue erikoisobjektit kappale)
+"ROU=XXYY"
+Tõmõ piste toimii reittipisteenõ muille objekteille. XX on reitin numero,
+ja YY kertoo monesko reitin piste tõmõ on. Objektit kulkevat reittiõ pitkin
+niin, ettõ ne menevõt reittipisteestõ aina seuraavaan. Viimeisen reittipisteen
+jõlkeen ne lõhtevõt taas reitin ensimmõiseen pisteeseen.
+esim.
+ROU=0402_RWT=120   - Reitin 4 toinen reittipiste. Pisteessõ kappale pysõhtyy
+                     kahdeksi sekunniksi.
+ROU=0101_RYA=90    - Reitin 1 ensimmõinen reittipiste. Kappaleen y-kulma on tõssõ
+		         kohdassa reittiõ 90 astetta. 
+
+Liikkuva piste:  (lue erikoisobjektit kappale)
+"MOV=XXYY","SPD=?"
+Piste liikkuu tiettyõ reittiõ pitkin. Reitti tehdõõn POINTTEJEN avulla.
+Kaksi ensimmõistõ lukua (XX) tarkoittavat reitin numeroa, ja loput
+kaksi (YY) tarkoittavat ensimmõistõ reittipistettõ, johon piste lõhtee.
+SPD - mõõrite antaa pistee kulkunopeuden.
+esim. 
+MOV=0301_SPD=5       - Piste liikkuu reittiõ 3 pitkin ja sen nopeus on 5.
+DIA_MOV=0501_SPD=2   - Piste (joka on timantti) liikkuu reittiõ 5 pitkin
+                       ja sen nopeus on 2.
+
+
+-- 5. Taustakuva ---------------------------------------------------------------
+
+Pelin kenttien taustalla on taustakuva. Se on BMP-kuva, jota "vieritetõõn"
+taustalla. 
+
+Nõin teet taustakuvan:
+1. Tee aluksi perus materiaali, johon lataat halutun BMP:n diffuseksi.
+2. Põõvalikosta clikkaa RENDERING - ENVIROINMENT
+3. Clikkaa "enviroinment map" laatikkoa. (NONE)
+4. Aseta BROWSE FROM "Mtrl editor"-asetukseen, ja valitse
+   taustakuvan BMP valikosta. (siinõ on vihreõ laatikko edessõ)
+5. Valitse INSTANCE seuraavasta kysymyksestõ. (ja sitten OK)
+
+
+-- 6. Optimointia --------------------------------------------------------------
+
+Mainitsin ensimmõisessõ osiossa 1000-2000 polygonin maksimi suosituksesta.
+Tietenkin on voinut kõydõ niin, ettõ kenttõsi on ylittõnyt tõmõn rajan
+roimasti. Ja vaikka ei olisikaan, on optimointi aina paikallaan.
+
+"File - Summary info":n avulla voit tarkistaa kenttõsi yhteis polygonimõõrõn.
+Polygonimõõrõn nõet "Mesh totals - Faces" kohdasta.
+
+Kõytõ jokaiseen objektiin "Modify - Optimize":ia.
+Voit sõõtõõ optimizen tehoa lisõõmõllõ face/edge -thresh arvoa.
+Aina kun suurempi optimointi sitõ võhemmõn yksityiskohtia jõõ jõljelle,
+joten kannattaa kokeilla useita eri vaihtoehtoja parhaan suhteen l÷ytõmiseksi.
+
+Optimizen jõlkeen objektin textuurikoordinaatit menevõt sekaisin, joten kõytõ
+jokaiseen optimoituun objektiin optimoinnin jõlkeen my÷s
+"Modify - UVW-mapping":ia palauttaaksesi textuurikoordinaatit kohdalleen.
+"Box-mapping" on paras vaihtoehto useimmissa tapauksissa.
+
+Kannattaa kõyttõõ objekteihin "EDIT MESH":iõ, ja poistaa sen avulla facet,
+jotka eivõt tule pelissõ nõkyviin. Kuten peliradan pohjafacet.
+
+HUOM! ─lõ tee pallolle rataa litistõmõllõ BOX:eja millin ohuisiksi, vaan
+jos haluat ohuita tasoja, niin poista "EDIT MESH":llõ BOX:in ala- ja sivufacet
+ja jõtõ vain põõlliface.  (muista kõyttõõ 2sided texturointia)
+
+HUOM! Pallo pomppaa vain facejen toiselta puolelta ja menee toisen
+puolen lõpi, vaikka facet olisivatkin 2sided texturoituja. Jos tahdot
+vaihtaa facejen "toimivaa" puolta, niin vaihto onnistuu NORMAL-ty÷kalun
+avulla, kohdasta "FLIP NORMALS".
+ 
+
+-- 7. Exportataan kenttõ ASE:ksi -----------------------------------------------
+
+BALLS:n kõõntõjõ(MAKEMAP.EXE) osaa toistaiseksi lukea vain ASE-tietostomuodossa
+olevia 3D-malleja. Eli sinun on exportattava 3D-mallisi ASE-muotoon.
+
+(Muista aina my÷s tallentaa normaalisti MAX-muotoon, koska 3D-Studio ei osaa
+ladata takaisin ASEja...)
+
+
+Nõin se kõy:
+1. File - Export
+2. Valitse ASE-muoto. (Ascii Scene Export)
+3. Mene BALLS:in MAPS-hakemistoon
+4. Kirjoita kenttõsi nimi ja paina OK.
+5. Ascii-export valikko tulee esiin, merkkaa (vain) seuraavat:
+  - Mesh Definition
+  - Materials
+  - Mapping Coordinates
+  - Geometric
+  - Lights 
+  - Helpers
+  - Use keys
+6. Paina OK:ta kun olet valmis.
+
+
+-- 8. MAKEMAP.EXE ---------------------------------------------------------------
+
+Avaa DOS-prompti ja mene BALLS:n MAPS-hakemistoon.
+Varmista, ettõ tekemõsi kenttõ on hakemistossa (kenttõ.ase).
+MAKEMAP:n avulla voit nyt kõõntõõ kenttõsi sellaiseen muotoon,
+ettõ 3d-engine osaa kõyttõõ sitõ.
+
+Eli kirjoita (DOS):
+MAKEMAP kenttõ
+
+esim:
+MAKEMAP cybercity
+
+Ruudulle pitõisi tulla kaikennõk÷istõ roskaa jonkun aikaa. 
+Jos kõõntõjõ valittaa, ettõ jossain kenttõsi objektissa on liikaa
+vertexeja, tvertexejõ tai faceja, niin avaa kenttõsi taas 3d-studiolla,
+ja kõytõ objektiin optimizea.
+
+Nyt voit kokeilla kenttõõsi SINGLE-MAP -vaihtoehdolla alkumenusta, 
+mutta lue sen jõlkeen eteenpõin...
+(jos kenttõõ ei nõy valikossa, varmista, ettõ tallensit sen varmasti
+MAPS-hakemistoon)
+
+
+-- 9. SE EI TOIMI!!!!! ---------------------------------------------------------
+
+On mahdollista, ettõ peli kaatuu, kun yritõt kõynnistõõ kenttõõsi.
+Vikoja voi olla useita. Tõssõ yleisimpiõ, joita olen huomannut
+kavereitteni kentissõ.
+
+1. Kentõn textuurejen tiedostonimet saavat olla korkeintaan
+   8 kirjainta pitkiõ.
+
+2. Textuurit pitõõ olla BMP-muodossa, niiden pitõõ olla laatikon muotoisia
+   ja niiden leveys ja korkeus tõytyy olla 2-potensseja eli 
+   esim. 128x128, 64x64, 32x32, 16x16.... Textuurejen maksimikoko on 256x256...
+   (nõmõ rajoitukset johtuvat joidenkin 3d-korttejen rajoittuneisuudesta,
+    mutta koska pelin tõytyy toimia mahdollisimman monella 3d-kortilla on
+    nõitõ rajoituksia noudatettava)
+
+3. Jos textuurihakemistosi(=BALLS) on sellaisessa paikassa, ettõ sen
+   hakemistopolussa on pitkiõ tiedostonimiõ, voi tulla ongelmia johtuen
+   DOS-kõõntõjistõ.
+
+4. Jokin objektisi voi sisõltõõ yli 2000 polygonia tai vertexiõ -> kõytõ
+   optimizea.
+
+5. Kentõssõ pitõõ olla START-paikka ja ainakin yksi timantti (DIA).
+
+
+... Jos et põõse alkuun, niin katsele "map.max" esimerkkikenttõõ, ja
+kokeile kõõntõõ se toimivaksi kentõksi...
+
+
+--------------------------------------------------------------------------------
+Mailaa jos et ymmõrtõnyt jotain, joku asia oli virheellisesti selitetty,
+tai jos et saanut kenttõõsi toimimaan.
+
+
+Yhteystiedot:
+-------------
+MAIL: seppo.j.aaltonen@kolumbus.fi        
+
+SHATTERSTORM WWW-SIVUT: 
+www.kolumbus.fi/seppo.j.aaltonen/shatter
+
+
