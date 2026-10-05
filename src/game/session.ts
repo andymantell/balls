@@ -29,6 +29,8 @@ export interface SessionOptions {
   slug?: string;
   /** Start in replay playback (TOP SCORES). */
   playback?: Replay;
+  /** A user-supplied .3do (custom level dropped on the page). */
+  file?: ArrayBuffer;
 }
 
 /**
@@ -89,7 +91,7 @@ export class LevelSession implements Screen {
   static async create(app: App, opts: SessionOptions): Promise<LevelSession> {
     const campaign = opts.campaign ?? null;
     const slug = campaign !== null ? CAMPAIGN[campaign] : opts.slug!;
-    const file = parseThreeDo(await fetchBuffer(`${ASSET_ROOT}maps/${slug}.3do`), slug);
+    const file = parseThreeDo(opts.file ?? (await fetchBuffer(`${ASSET_ROOT}maps/${slug}.3do`)), slug);
     const world = new World(file);
     const view = await LevelView.create(file, world, app.textures);
     const best = await app.records.get(slug);

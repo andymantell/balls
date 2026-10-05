@@ -20,6 +20,20 @@ async function main(): Promise<void> {
   else app.show(MainMenu.create(app));
   app.start();
 
+  // Custom levels: drop a MAKEMAP .3do (plus its .bmp/.png textures) on the page.
+  window.addEventListener('dragover', (e) => e.preventDefault());
+  window.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const files = [...(e.dataTransfer?.files ?? [])];
+    const level = files.find((f) => /\.3do$/i.test(f.name));
+    for (const f of files) {
+      if (/\.(bmp|png|jpe?g)$/i.test(f.name)) app.textures.extra.set(f.name.replace(/\.[^.]*$/, '').toLowerCase(), f);
+    }
+    if (!level) return;
+    const slug = `custom:${level.name.replace(/\.[^.]*$/, '').toLowerCase()}`;
+    void level.arrayBuffer().then((file) => app.show(LevelSession.create(app, { slug, file })));
+  });
+
   const hint = document.getElementById('hint');
   if (hint) {
     const hide = () => hint.classList.add('hidden');

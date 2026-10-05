@@ -1,123 +1,132 @@
-# I've Got Some Balls — Godot port
+# I've got some BALLS (three.js port)
 
-A Godot 4 port of **"I've got some BALLS" v1.02**, Sebastian Aaltonen's 1999
-freeware 3D ball-rolling game. Roll a small ball through 12 levels, collect
-every diamond as fast as you can, and use coloured gates to become a red
-(fast), yellow (jumping), blue (zaps diamonds from a distance) or green
-(brakes and hovers) ball.
+A browser port of **"I've got some BALLS" v1.02**, Sebastian Aaltonen's 1999
+freeware 3D ball-rolling game, built with [three.js](https://threejs.org) and
+TypeScript. Roll a small ball through 12 levels, collect every diamond as fast
+as you can, and use coloured gates to turn into a red (fast), yellow (jumping),
+blue (zaps diamonds from a distance) or green (brakes) ball.
 
-The original came only as a Direct3D 6 executable, so the game logic was
-reverse engineered from the binary and checked against the best-time replays
-shipped with it (see [docs/REVERSE_ENGINEERING.md](docs/REVERSE_ENGINEERING.md)).
-All 15 original levels, textures, sounds and music are included and loaded
-from the original file formats, so custom levels made with the original
-`MAKEMAP.EXE` still work.
-
-![Main menu](docs/screenshots/menu.jpg)
-![Chase](docs/screenshots/chase.jpg)
-![Jump: the blue ball zapping a diamond](docs/screenshots/jump.jpg)
+The goal is an authentic port, not a remake. The original shipped only as a
+Direct3D 6 executable, so its physics, rendering setup, menus, HUD, timing and
+sounds were recovered from `BALLS.EXE` by disassembly and emulation, and the
+physics is checked against the best-time replays that shipped with the game.
+See [docs/REVERSE_ENGINEERING.md](docs/REVERSE_ENGINEERING.md). The 15
+original levels, textures, sounds and music are used in their original formats,
+so levels made with the original `MAKEMAP.EXE` work too.
 
 ## Running
 
-1. Install [Godot 4.7](https://godotengine.org/download) (standard build, no
-   .NET needed).
-2. Open `project.godot` in the editor and press **Play**, or run
-   `godot --path .` from this folder.
+```sh
+npm install
+npm run dev        # http://localhost:5173
+npm run build      # static site in dist/ (relative paths, host anywhere)
+npm run preview    # serve dist/
+```
+
+Click or press a key once to enable sound (browsers block audio until then).
 
 ### Controls
 
+The defaults are the original's (see `docs/original/ballseng.txt`):
+
 | Key | Action |
 |---|---|
-| Arrow keys / D-pad | Accelerate the ball relative to the camera |
-| Space / A | Ball ability (jump, brake…) and menu select |
-| R / Back | Restart level |
-| C / Y | Toggle camera mode |
-| Esc / Start | In-game menu (pauses), back in menus |
-| Alt+Enter / F11 | Fullscreen |
-| F2 | Toggle classic per-vertex / modern lighting |
-| F12 | Quit immediately |
+| Arrow keys | Accelerate the ball in that direction, relative to the camera |
+| Space | Ball ability (jump, brake, …) and menu select |
+| R | Restart the level |
+| Esc | Level menu; back in menus |
 
-Keys can be remapped in **SETUP → CHANGE CONTROLS**. As the original manual
-says, the arrow keys do not steer; each one adds speed in its direction.
+Keys can be changed in **SETUP → CHANGE CONTROLS**. As in 1999, the bindings
+are shown as Windows virtual-key codes. A gamepad also works (d-pad or stick,
+A = action, Start/B = Esc, Y = restart).
+
+As the original manual says, the arrow keys don't steer: each one adds speed
+in its own direction.
 
 ### Menus
 
-* **START GAME** plays the 12 levels in the original order.
-* **SINGLE MAP** plays any level, including custom ones.
-* **TOP SCORES** lists best times. Select one to watch its replay; the
-  original 1999 world records are included.
-* **SETUP** has volume, fullscreen, antialiasing, the original SPECULAR option,
-  classic or modern lighting, light glows, CLASSIC STEERING and an FPS counter.
-  CLASSIC STEERING reproduces the original's quirk where Right alone
-  accelerates at 70%.
+* **START GAME** plays the 12 levels in the original order, ending with the
+  original finale.
+* **SINGLE MAP** plays any level.
+* **TOP SCORES** lists best times, starting with the 1999 records that came
+  with the game. Select a row to watch its replay.
+* **SETUP**: SPECULAR, ANTIALIAS and CHANGE CONTROLS, as in the original.
 
-Best times, initials and best-time replays are saved in Godot's user data
-folder (`user://records.cfg`, `user://replays/`). Replays use the original
-`.rep` format.
+Best times, initials and best-time replays are saved in the browser's
+`localStorage`. Replays use the original `.rep` format.
 
-## Custom levels
+### Custom levels
 
-Put `.3do` files compiled with the original `MAKEMAP.EXE` (see
-`docs/original/makemape.txt`) into the `maps` folder under the game's user
-data directory, which Godot calls `user://maps/`. On Linux that is
-`~/.local/share/godot/app_userdata/I've Got Some Balls/maps/`. Their BMP or PNG
-textures can go in the same folder.
+Drag a `.3do` level compiled with the original `MAKEMAP.EXE` (see
+`docs/original/makemape.txt`) onto the page, together with any textures it
+uses that the game doesn't ship (`.bmp` or `.png`).
+
+### URL options
+
+* `?map=chase` starts a level directly.
+* `?replay=chase` plays a level's best-time replay.
 
 ## Project layout
 
 ```
-assets/        converted original assets (PNG textures, WAV, OGG music,
-               original .3do/.rep/.rec data, bitmap font)
-src/format/    .3DO / replay readers, coordinate conversion
-src/sim/       deterministic physics (BallWorld, SimObject, RouteTable)
-src/world/     rendering: meshes, materials, lights, effects
-src/game/      game session (fixed 16 ms tick, replays, records) and HUD
-src/ui/        3D main menu, menu lists, bitmap font
-src/autoload/  Settings, Records, Sound singletons
-tests/         replay verification and end-to-end smoke test
-tools/         convert_assets.py: rebuilds assets/ from the original release
+public/assets/   converted original assets (PNG textures, WAV, OGG/M4A music,
+                 original .3do/.rep/.rec files)
+src/core/        .3DO and replay readers, vectors, coordinates, MSVC rand()
+src/sim/         deterministic simulation: World (ball, collisions, routes,
+                 gates, diamonds, particles), SimObject, RouteTable
+src/render/      Direct3D 6-style material (per-vertex lighting, blend modes),
+                 level/menu/ending views, background, bitmap font
+src/game/        app shell and timing, main menu, level session (HUD, level
+                 menu, banners, name entry, replays), audio, input, storage
+tests/           physics checked against the original replays
+tools/           convert_assets.py rebuilds public/assets/ from the release
+docs/            reverse-engineering notes and the original readme files
 ```
 
-The simulation (`BallWorld`) has no scene dependencies. It runs at the
-original fixed rate and the renderer interpolates between ticks, so motion is
-smooth at any frame rate.
+The simulation has no rendering dependencies and runs at the original fixed
+16 ms tick. The renderer interpolates between ticks.
 
 ## Tests
 
 ```sh
-godot --headless --import                                   # once
-godot --headless --script res://tests/replay_check.gd       # physics vs. 1999 replays
-godot --headless res://tests/smoke_test.tscn                # menus, play-through, records, replay
+npm test           # replays all 15 original .rep files through the physics
+npm run typecheck
 ```
-
-Both also run in GitHub Actions (`.github/workflows/tests.yml`).
 
 ## Rebuilding the assets
 
-`assets/` was generated from the original release archive with:
+`public/assets/` was generated from the original release archive with:
 
 ```sh
-pip install pillow   # ffmpeg with libopenmpt is also required for the music
+pip install pillow   # ffmpeg with libopenmpt is also needed for the music
 python3 tools/convert_assets.py path/to/extracted/ivegotsomeballs
 ```
 
 ## Differences from the original
 
-* Rendering uses Godot's lighting. Light ranges are stretched to approximate
-  Direct3D 6's constant attenuation, and per-vertex lighting is available.
-* Motion is interpolated between simulation ticks. The original rendered the
-  last tick directly.
-* Original replays play back with the recorded ball positions, so even the
-  ones from pre-release builds look exactly as they did.
-* Gamepad support, key remapping persisted per action, and widescreen.
+* Frames are interpolated between simulation ticks for smooth motion on any
+  display. The original drew the latest tick.
+* The picture keeps the original 4:3 shape (letterboxed) but renders at the
+  window's resolution instead of 640×480.
+* Both SPECULAR "ON" settings render the intended highlight; the original's two
+  settings worked around a DirectX 6.1 driver difference.
+* Music is the original Impulse Tracker modules, pre-rendered and looped.
+* QUIT can't close a browser tab, so it blanks the screen until a key is
+  pressed.
+* Additions: gamepad support, `?map=` / `?replay=` URLs, and drag-and-drop
+  custom levels. F2 (Direct3D device selection) and F12 (quick quit) have no
+  browser equivalent.
 
 ## Credits
 
-*I've got some BALLS* © 1999 Sebastian Aaltonen (Shatterstorm), released as
-freeware with permission to redistribute. Programming, design, 3D models and
-levels: Sebastian Aaltonen. Textures: Sebastian Aaltonen, Jaakko and Jukka
-Tapio, Heikki Väisänen. Music and sound effects: Tommi Lahtinen. English
-documentation: Ismo Horppu. The original documentation is in `docs/original/`.
+*I've got some BALLS* © 1999 Sebastian Aaltonen, released as freeware with
+permission to redistribute. Design, programming, 3D models and levels:
+Sebastian Aaltonen. Textures: Sebastian Aaltonen, Jaakko and Jukka Tapio,
+Heikki Väisänen. Sound effects: Tommi Lahtinen. Music: Tommi Lahtinen and
+Sebastian Aaltonen. English documents: Ismo Horppu. Beta testing: Andrei
+Stepanov and Sebastian Aaltonen. The original used the MIDAS Digital Audio
+System 1.1.2 (© 1996–1997 Housemarque Inc.). The original documentation is in
+`docs/original/`.
 
 This port is an unofficial fan project. All original assets belong to their
 authors.
