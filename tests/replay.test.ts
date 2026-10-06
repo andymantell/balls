@@ -21,16 +21,24 @@ const buf = (path: string) => {
   return b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength);
 };
 
+/**
+ * castlecoaster.3DO was saved six hours after its replay was recorded
+ * (24 Sep 1999, 09:35 vs 15:47), so four ticks touch geometry that changed.
+ */
+const MIN_RATIO: Record<string, number> = { castlecoaster: 0.997 };
+
+// All 32 combinations: the keyboard allows opposite keys together, and the
+// recorded players used them (e.g. Up+Down+Left steers at 0.7).
 const inputs: Input[] = [];
 for (let m = 0; m < 32; m++) {
   const i = { up: !!(m & 1), down: !!(m & 2), left: !!(m & 4), right: !!(m & 8), action: !!(m & 16) };
-  if ((i.up && i.down) || (i.left && i.right)) continue;
   inputs.push(i);
 }
 
 function check(id: string) {
   const world = new World(parseThreeDo(buf(`${MAPS}${id}.3do`), id));
   world.lookahead = LEGACY_LOOKAHEAD[id] ?? world.lookahead;
+  world.speedContactLimit = world.lookahead !== 0;
   const replay = Replay.parse(buf(`${MAPS}${id}.rep`));
   let matched = 0;
   for (let i = 0; i < replay.length; i++) {
@@ -62,7 +70,7 @@ describe('physics reproduces the original replays', () => {
     it(id, () => {
       const { ratio, world } = check(id);
       console.log(`${id.padEnd(14)} matched ${(ratio * 100).toFixed(2)}%`);
-      expect(ratio).toBeGreaterThanOrEqual(0.985);
+      expect(ratio).toBeGreaterThanOrEqual(MIN_RATIO[id] ?? 1);
       expect(world.diamondsLeft()).toBe(0);
       // The 1999 timer runs (in real milliseconds) until the last diamond has
       // shrunk away; our tick count must land within a few percent of it.

@@ -238,15 +238,28 @@ state and compares the best result with the next record. It also checks that
 the level finishes within 3% of the recorded best time. Some replays were
 recorded with pre-release builds:
 
-* `loops`, `chase`, `rollercoaster` (14 Aug 1999) used no collision look-ahead,
-  matching the changelog's "ball no longer passes through at high speed" entry
-  for v1.0.
+* `loops`, `chase`, `rollercoaster` (14 Aug 1999) used no collision look-ahead
+  and accepted a ray hit only within the ball radius (v1.0 extends that to
+  `max(|v_axis|, 10)`), matching the changelog's "ball no longer passes through
+  at high speed" entry for v1.0.
 * `lazer maze` (18 Aug 1999) used a look-ahead of `v/2`.
 
-With those settings all 15 replays match on at least 98.7% of ticks (all but
-rollercoaster at 99.7–100%). The remaining misses are isolated: the first tick
-(which steers with an angle left over from the previous screen) and a handful
-of high-speed wall hits.
+With those settings 14 of the 15 replays are reproduced on every tick (the
+first tick excepted: it steers with whatever angle the previous screen left
+behind). The test tries all 32 key combinations, because the recorded players
+sometimes held opposite keys together. `castlecoaster` matches 99.77%: its four
+missed ticks touch level geometry that changed after the replay was made
+(`castlecoaster.rep` was saved at 09:35 on 24 Sep 1999, `castlecoaster.3DO` at
+15:47 the same day). The original routine reproduces the same contact as the
+port on that state, so the shipped map simply isn't the one the replay was
+recorded on.
+
+Details that closing the last gaps required, each confirmed in the binary:
+
+* Rotation angles of spinning objects are stored as float32; after a thousand
+  ticks the rounding moves fast paddles (bounce) by a visible amount.
+* The red ball's ×2 steering multiplier (`0x523ff0`) is written by the
+  ability step, which runs after steering, so it applies one tick late.
 
 The physics can't be single-stepped in the original program, so `castle`'s
 earlier 89% was investigated by running the original collision routine

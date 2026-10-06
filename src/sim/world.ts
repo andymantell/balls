@@ -128,6 +128,11 @@ export interface LightState {
 export class World {
   /** Collision probe look-ahead (v1.0+: 1/3; replays from pre-release builds need 0.5 or 0). */
   lookahead = 1 / 3;
+  /**
+   * v1.0+ accepts a ray hit up to max(|v_axis|, radius) away so fast balls
+   * don't tunnel; the 14 Aug 1999 pre-release accepted only hits within the radius.
+   */
+  speedContactLimit = true;
   /** Reproduce the original's "Right alone is 0.7x" steering quirk. */
   classicSteering = true;
 
@@ -144,6 +149,8 @@ export class World {
   carry = new Vec3();
   ballType = BallType.Normal;
   private prevBallType = BallType.Normal;
+  /** Steering multiplier (0x523ff0): 2 for the red ball, written by the ability step. */
+  speedMultiplier = 1;
   jumpTimer = 0;
   zapTimer = 0;
   zapTarget = new Vec3();
@@ -194,6 +201,7 @@ export class World {
     this.carry.set(0, 0, 0);
     this.ballType = BallType.Normal;
     this.prevBallType = BallType.Normal;
+    this.speedMultiplier = 1;
     this.jumpTimer = 0;
     this.zapTimer = 0;
     this.contactCount = 0;
@@ -314,7 +322,7 @@ export class World {
     } else if ((input.up || input.down) && (input.left || input.right)) {
       factor = Math.fround(DIAGONAL_FACTOR);
     }
-    const k = ACCELERATION * factor * (this.ballType === BallType.Red ? 2 : 1);
+    const k = ACCELERATION * factor * this.speedMultiplier;
     const a = -this.yaw;
     const c = Math.cos(a), s = Math.sin(a);
     const f = Math.fround;
@@ -345,6 +353,8 @@ export class World {
 
   private applyBallType(input: Input): void {
     const L = this.ballLight;
+    // Set after steering (0x408e28/0x408f07), so a new red ball steers at x2 one tick late.
+    this.speedMultiplier = this.ballType === BallType.Red ? 2 : 1;
     switch (this.ballType) {
       case BallType.Normal:
         L.range = 1;
@@ -547,11 +557,11 @@ export class World {
         // Axis aligned lines through the probe: Y first, then X, then Z.
         const hit = (axis: number) => axisHit(V, a, b, c, lx, ly, lz, axis);
         let t = hit(1);
-        if (Number.isNaN(t) || Math.abs(t) >= Math.max(avy, BALL_RADIUS)) {
+        if (Number.isNaN(t) || Math.abs(t) >= (this.speedContactLimit ? Math.max(avy, BALL_RADIUS) : BALL_RADIUS)) {
           t = hit(0);
-          if (Number.isNaN(t) || Math.abs(t) >= Math.max(avx, BALL_RADIUS)) {
+          if (Number.isNaN(t) || Math.abs(t) >= (this.speedContactLimit ? Math.max(avx, BALL_RADIUS) : BALL_RADIUS)) {
             t = hit(2);
-            if (Number.isNaN(t) || Math.abs(t) >= Math.max(avz, BALL_RADIUS)) continue;
+            if (Number.isNaN(t) || Math.abs(t) >= (this.speedContactLimit ? Math.max(avz, BALL_RADIUS) : BALL_RADIUS)) continue;
           }
         }
         const contact = { object: o, face: f, depth: Math.abs(t) - BALL_RADIUS };
@@ -664,7 +674,8 @@ export class World {
     for (const o of this.objects) {
       if (o.spinRate.isZero()) continue;
       o.prevVerts.set(o.verts);
-      o.angles.set(o.angles.x + o.spinRate.x, o.angles.y + o.spinRate.y, o.angles.z + o.spinRate.z);
+      // Angles are stored as float32 (0x40ae5f).
+      o.angles.set(Math.fround(o.angles.x + o.spinRate.x), Math.fround(o.angles.y + o.spinRate.y), Math.fround(o.angles.z + o.spinRate.z));
       o.applyRotation();
     }
   }
@@ -705,7 +716,7 @@ export class World {
       this.position.clone(), this.prevPosition.clone(), this.velocity.clone(), this.carry.clone(),
       this.ballType, this.prevBallType, this.jumpTimer, this.zapTimer, this.zapTarget.clone(),
       this.contactCount, this.camera.clone(), this.prevCamera.clone(), this.tick, this.elapsedMs,
-      this.finished, this.lost, this.diamonds.map((d) => d.fade), this.cameraMode, this.yaw, this.pitch,
+      this.finished, this.lost, this.diamonds.map((d) => d.fade), this.cameraMode, this.yaw, this.pitch, this.speedMultiplier,
     ];
   }
 
@@ -732,6 +743,7 @@ export class World {
     this.cameraMode = s[i++] as number;
     this.yaw = s[i++] as number;
     this.pitch = s[i++] as number;
+    this.speedMultiplier = s[i++] as number;
   }
 }
 
