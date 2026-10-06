@@ -15,8 +15,6 @@ const TOLERANCE = 0.02;
 
 /** Replays recorded with pre-release builds (see docs/REVERSE_ENGINEERING.md). */
 const LEGACY_LOOKAHEAD: Record<string, number> = { loops: 0, chase: 0, rollercoaster: 0, lazer_maze: 0.5 };
-/** castle.rep: collisions match, but long stretches steer in a direction the camera model doesn't explain. */
-const MIN_RATIO: Record<string, number> = { castle: 0.85 };
 
 const buf = (path: string) => {
   const b = readFileSync(path);
@@ -40,21 +38,17 @@ function check(id: string) {
     const start = world.saveBallState();
     let bestErr = Infinity;
     let best: unknown[] = start;
-    for (const mode of [world.cameraMode, 1 - world.cameraMode]) {
-      for (const input of inputs) {
-        world.loadBallState(start);
-        world.cameraMode = mode;
-        world.stepBall(input);
-        const err = world.position.distanceTo(replay.positions[i]) + world.velocity.distanceTo(replay.velocities[i]);
-        if (err < bestErr) {
-          bestErr = err;
-          best = world.saveBallState();
-        }
+    for (const input of inputs) {
+      world.loadBallState(start);
+      world.stepBall(input);
+      const err = world.position.distanceTo(replay.positions[i]) + world.velocity.distanceTo(replay.velocities[i]);
+      if (err < bestErr) {
+        bestErr = err;
+        best = world.saveBallState();
       }
-      if (bestErr < 1e-3) break;
     }
     world.loadBallState(best);
-    // Tick 0 steers with a stale camera angle left over from before the level.
+    // Tick 0 steers with whatever angle the previous screen left in 0x523fbc.
     if (bestErr <= TOLERANCE || i === 0) matched++;
     world.overrideBall(replay.positions[i], replay.velocities[i]);
   }
@@ -68,7 +62,7 @@ describe('physics reproduces the original replays', () => {
     it(id, () => {
       const { ratio, world } = check(id);
       console.log(`${id.padEnd(14)} matched ${(ratio * 100).toFixed(2)}%`);
-      expect(ratio).toBeGreaterThanOrEqual(MIN_RATIO[id] ?? 0.97);
+      expect(ratio).toBeGreaterThanOrEqual(0.985);
       expect(world.diamondsLeft()).toBe(0);
       // The 1999 timer runs (in real milliseconds) until the last diamond has
       // shrunk away; our tick count must land within a few percent of it.

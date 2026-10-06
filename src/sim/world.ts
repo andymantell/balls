@@ -298,21 +298,45 @@ export class World {
     return [new Vec3(fx, 0, fz), new Vec3(-fz, 0, fx)];
   }
 
+  /**
+   * Steering (0x408ba7). The engine steers with the yaw stored by the camera
+   * update (0x523fbc), i.e. the direction from the ball to the camera as
+   * computed by angleBetween: when the camera and ball X differ by less than
+   * 1e-4 that angle collapses to 0, so steering then points along X. The keys
+   * are applied right, left, down, up, each rounded to float32, in Direct3D
+   * space (z mirrored here).
+   */
   private applySteering(input: Input): void {
     let factor = 1;
     if (this.classicSteering) {
       // BALLS.EXE tests (up && left) || right, so Right alone is 30% weaker.
-      if ((input.up && input.left) || input.right) factor = DIAGONAL_FACTOR;
+      if ((input.up && input.left) || input.right) factor = Math.fround(DIAGONAL_FACTOR);
     } else if ((input.up || input.down) && (input.left || input.right)) {
-      factor = DIAGONAL_FACTOR;
+      factor = Math.fround(DIAGONAL_FACTOR);
     }
-    const amount = ACCELERATION * factor * (this.ballType === BallType.Red ? 2 : 1);
-    const [f, r] = this.steeringAxes();
-    if (input.up) this.velocity.addScaled(f, amount);
-    if (input.down) this.velocity.addScaled(f, -amount);
-    if (input.left) this.velocity.addScaled(r, -amount);
-    if (input.right) this.velocity.addScaled(r, amount);
-    this.velocity.f32();
+    const k = ACCELERATION * factor * (this.ballType === BallType.Red ? 2 : 1);
+    const a = -this.yaw;
+    const c = Math.cos(a), s = Math.sin(a);
+    const f = Math.fround;
+    let vx = this.velocity.x, vz = -this.velocity.z;
+    if (input.right) {
+      vz = f(vz + k * c);
+      vx = f(vx - k * s);
+    }
+    if (input.left) {
+      vz = f(vz - k * c);
+      vx = f(vx + k * s);
+    }
+    if (input.down) {
+      vx = f(vx + k * c);
+      vz = f(vz + k * s);
+    }
+    if (input.up) {
+      vx = f(vx - k * c);
+      vz = f(vz - k * s);
+    }
+    this.velocity.x = vx;
+    this.velocity.z = -vz;
   }
 
   private sound(sample: string, volume = 63, count = 1): void {
@@ -521,11 +545,12 @@ export class World {
         if (ry >= FMAX[f3 + 1] + my || ry <= FMIN[f3 + 1] - my) continue;
         const a = I[f3] * 3, b = I[f3 + 1] * 3, c = I[f3 + 2] * 3;
         // Axis aligned lines through the probe: Y first, then X, then Z.
-        let t = axisHit(V, a, b, c, lx, ly, lz, 1);
+        const hit = (axis: number) => axisHit(V, a, b, c, lx, ly, lz, axis);
+        let t = hit(1);
         if (Number.isNaN(t) || Math.abs(t) >= Math.max(avy, BALL_RADIUS)) {
-          t = axisHit(V, a, b, c, lx, ly, lz, 0);
+          t = hit(0);
           if (Number.isNaN(t) || Math.abs(t) >= Math.max(avx, BALL_RADIUS)) {
-            t = axisHit(V, a, b, c, lx, ly, lz, 2);
+            t = hit(2);
             if (Number.isNaN(t) || Math.abs(t) >= Math.max(avz, BALL_RADIUS)) continue;
           }
         }
@@ -630,7 +655,7 @@ export class World {
     }
     c.f32();
     // Background scroll angles, computed in Direct3D space exactly like 0x407450.
-    this.yaw = -angleBetween(p.z * -1, p.x, c.z * -1, c.x);
+    this.yaw = Math.fround(-angleBetween(p.z * -1, p.x, c.z * -1, c.x));
     const horiz = Math.hypot(c.x - p.x, c.z - p.z);
     this.pitch = angleBetween(p.y, 0, c.y, horiz);
   }

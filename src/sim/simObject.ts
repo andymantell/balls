@@ -58,16 +58,22 @@ export class SimObject {
     this.routeSpeed = m.routeSpeed;
     this.origin = fromD3D(...m.pivot).f32();
     const n = m.vertices.length / 3;
-    this.local = new Float64Array(n * 3);
-    for (let i = 0; i < n; i++) {
-      this.local[i * 3] = Math.fround(m.vertices[i * 3] - m.pivot[0]);
-      this.local[i * 3 + 1] = Math.fround(m.vertices[i * 3 + 1] - m.pivot[1]);
-      this.local[i * 3 + 2] = -Math.fround(m.vertices[i * 3 + 2] - m.pivot[2]);
-    }
+    const toLocal = (src: Float32Array) => {
+      const out = new Float64Array(n * 3);
+      for (let i = 0; i < n; i++) {
+        out[i * 3] = Math.fround(src[i * 3] - m.pivot[0]);
+        out[i * 3 + 1] = Math.fround(src[i * 3 + 1] - m.pivot[1]);
+        out[i * 3 + 2] = -Math.fround(src[i * 3 + 2] - m.pivot[2]);
+      }
+      return out;
+    };
+    // Collision faces use the welded positions but the pre-weld face normals.
+    this.local = toLocal(m.welded?.vertices ?? m.vertices);
+    const original = m.welded ? toLocal(m.vertices) : this.local;
     const fc = m.faces.length / 7;
     this.indices = new Int32Array(fc * 3);
     this.localNormals = new Float64Array(fc * 3);
-    const L = this.local;
+    const L = original;
     for (let f = 0; f < fc; f++) {
       const a = m.faces[f * 7], b = m.faces[f * 7 + 1], c = m.faces[f * 7 + 2];
       this.indices[f * 3] = a;

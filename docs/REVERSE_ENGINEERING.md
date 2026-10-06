@@ -39,6 +39,15 @@ Each **object** is a `0x218C` byte header followed by `n_uv` × (u, v),
 | `0x2170` | ambient RGB ("glow") |
 | `0x2180` | texture file name |
 
+After loading, `0x403340` **welds seams between objects**. For every pair of
+different objects with the same texture name that neither spin nor follow a
+route, any two vertices closer than 3 units (Manhattan distance, world space)
+are both moved to their midpoint, and their vertex normals become the average
+of the two (not renormalised). Face normals used for collisions were computed
+before the weld and are not updated. This is the changelog's "no holes between
+the objects". It slightly tilts some large floors, and replays depend on it:
+castle's best-time replay only matches with the weld applied.
+
 Each **point record** is `0x8E` bytes: name at 0, type at 32 (1 = light,
 9/99 = helper), position at 36 stored as **(x, z, y)** relative to vertex
 space, colour at 48, light range at 84 (≥ 10000 = everywhere), glow size at 88,
@@ -49,9 +58,12 @@ space, colour at 48, light range at 84 (≥ 10000 = everywhere), glow size at 88
 
 The game advances in fixed 16 ms ticks (`ms >> 4`, i.e. 62.5 Hz). Per tick:
 
-1. Steering: ±0.1 × (2 for the red ball) along the camera's forward/right
-   axes. The code scales by 0.7 when `(up && left) || right`, so pressing
-   Right alone is 30% weaker. The shipped replays confirm this.
+1. Steering (`0x408ba7`): ±0.1 × (2 for the red ball) relative to the yaw the
+   camera update stored last tick (`0x523fbc`). That yaw comes from the
+   `angleBetween` helper, which returns 0 when camera and ball X differ by less
+   than 1e-4. Keys are applied right, left, down, up, each rounded to float32.
+   The code scales by 0.7 when `(up && left) || right`, so pressing Right alone
+   is 30% weaker. The shipped replays confirm this.
 2. Gravity: `vy -= 0.1`.
 3. Ball abilities. Yellow: if touching anything and the 60 tick cooldown is
    over, `vy += 5`. Blue: every diamond within 150 units is zapped. Green: while
@@ -231,12 +243,16 @@ recorded with pre-release builds:
   for v1.0.
 * `lazer maze` (18 Aug 1999) used a look-ahead of `v/2`.
 
-With those settings 14 of the 15 replays match on at least 98.7% of ticks
-(most at 99.6–100%). The misses are the stale-camera first tick and a handful
-of high-speed wall hits. `castle` reaches 89%: every collision matches, but
-over long stretches the steering direction differs from the camera model, and
-the cause has not been found.
+With those settings all 15 replays match on at least 98.7% of ticks (all but
+rollercoaster at 99.7–100%). The remaining misses are isolated: the first tick
+(which steers with an angle left over from the previous screen) and a handful
+of high-speed wall hits.
+
+The physics can't be single-stepped in the original program, so `castle`'s
+earlier 89% was investigated by running the original collision routine
+(`0x4081f0`) in Unicorn on the recorded state. It found a floor face 0.34
+units higher than the file's geometry, which led to the weld above.
 
 Tools used: capstone for disassembly and Unicorn to execute the original's
-text, menu and HUD routines with logged arguments, plus the Playwright
+text, menu, HUD, loader and collision routines with logged arguments, plus the Playwright
 screenshots used to check the port's menus, levels and ending.

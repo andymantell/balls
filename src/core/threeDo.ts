@@ -1,3 +1,4 @@
+import { weldObjects } from './weld';
 /**
  * Reader for the ".3DO" format written by MAKEMAP.EXE for Sebastian Aaltonen's
  * "3D-engine v4.0" (I've got some BALLS, 1999). See docs/REVERSE_ENGINEERING.md.
@@ -43,6 +44,8 @@ export interface MeshObject {
   vertices: Float32Array; // xyz, absolute
   uvs: Float32Array; // uv
   faces: Int32Array; // 7 per face: v0 v1 v2 t0 t1 t2 smooth
+  /** Positions (absolute, as in `vertices`) and mirrored-space vertex normals after the loader's seam welding. */
+  welded?: { vertices: Float32Array; normals: Float32Array };
 }
 
 export interface PointRecord {
@@ -159,5 +162,6 @@ export function parseThreeDo(buffer: ArrayBuffer, source = '<memory>'): ThreeDoF
     });
     p += POINT_RECORD_SIZE;
   }
+  weldObjects(objects);
   return { version, materialCount, background, objects, points };
 }
