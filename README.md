@@ -116,8 +116,8 @@ python3 tools/convert_assets.py path/to/extracted/ivegotsomeballs
 * Both SPECULAR "ON" settings render the intended highlight; the original's two
   settings worked around a DirectX 6.1 driver difference.
 * Music is the original Impulse Tracker modules, pre-rendered and looped.
-* QUIT can't close a browser tab, so it blanks the screen until a key is
-  pressed.
+* There is no QUIT entry, since a web page can't close its own tab. Its slot
+  on the menu wheel is blanked and skipped.
 * Additions: gamepad support, `?map=` / `?replay=` URLs, and drag-and-drop
   custom levels. F2 (Direct3D device selection) and F12 (quick quit) have no
   browser equivalent.

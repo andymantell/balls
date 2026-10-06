@@ -9,6 +9,7 @@ const MODEL_SPIN = 0.0002;
 const WAVE_AMPLITUDE = 16; // 0.008 / 0.0005
 const WAVE_SPEED = 0.0005;
 const WAVE_PHASE = 0.01;
+const QUIT_COLUMN_END = 52; // menu.bmp: QUIT occupies texels x 5..44 of 256
 
 /**
  * The main menu scene (menu.3DO, drawn by 0x40ed00): a textured sphere, the
@@ -31,6 +32,24 @@ export class MenuView {
       if (p.special !== 6) continue;
       const pos = p.mesh.geometry.getAttribute('position') as THREE.BufferAttribute;
       v.wave.push({ pos, rest: (pos.array as Float32Array).slice() });
+    }
+    // The browser port has no QUIT entry: black out its column on the wheel
+    // texture (additive blending makes black invisible).
+    for (const p of v.model.parts) {
+      const map = p.material.uniforms.map.value as THREE.Texture | null;
+      if (p.special !== 5 || !map) continue;
+      const img = map.image as ImageBitmap;
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, 0, 0);
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, Math.round((img.width * QUIT_COLUMN_END) / 256), img.height);
+      const tex = map.clone();
+      tex.image = canvas;
+      tex.needsUpdate = true;
+      p.material.uniforms.map.value = tex;
     }
     let n = 0;
     for (const r of file.points) {

@@ -50,8 +50,6 @@ export class MainMenu implements Screen {
   private scores: { text: string; slug: string }[] = [];
   /** CHANGE CONTROLS capture state (0x913344): 0 idle, 1 wait release, 2 wait key, 3 wait release. */
   private capture = 0;
-  /** QUIT pressed: the browser cannot exit, so the screen goes black until a key. */
-  private quit = false;
 
   private constructor(private app: App, private view: MenuView) {}
 
@@ -82,14 +80,6 @@ export class MainMenu implements Screen {
   }
 
   frame(ticks: number, dtMs: number): void {
-    const input = this.app.input;
-    if (this.quit) {
-      if (input.lastKey || input.action) {
-        this.quit = false;
-        input.releaseAll();
-      }
-      return;
-    }
     state.clockMs += dtMs;
     this.handleInput(ticks);
     if (this.app.loading) return;
@@ -108,18 +98,17 @@ export class MainMenu implements Screen {
 
     switch (state.page) {
       case Page.Wheel: {
+        // The browser port has no QUIT: the wheel steps over its blanked slot (4).
         if (state.s === 0 && up) {
-          state.target -= STEP;
-          state.sel--;
+          state.target -= state.sel === 0 ? 2 * STEP : STEP;
+          state.sel = state.sel === 0 ? 3 : state.sel - 1;
           state.s = -1;
         }
         if (state.s === 0 && down) {
-          state.target += STEP;
-          state.sel++;
+          state.target += state.sel === 3 ? 2 * STEP : STEP;
+          state.sel = state.sel === 3 ? 0 : state.sel + 1;
           state.s = 1;
         }
-        if (state.sel > 4) state.sel = 0;
-        if (state.sel < 0) state.sel = 4;
         if (state.current > state.target && state.s === -1) state.current -= ticks * WHEEL_SPEED;
         else if (state.current < state.target && state.s === 1) state.current += ticks * WHEEL_SPEED;
         else {
@@ -141,15 +130,6 @@ export class MainMenu implements Screen {
             break;
           case 3:
             this.openPage(Page.Setup, 0, 25);
-            break;
-          case 4:
-            input.consumeAction();
-            this.quit = true;
-            try {
-              window.close();
-            } catch {
-              /* not allowed */
-            }
             break;
         }
         break;
@@ -280,7 +260,6 @@ export class MainMenu implements Screen {
   }
 
   render(renderer: THREE.WebGLRenderer): void {
-    if (this.quit) return;
     this.view.lights.specularOn.value = this.app.specular > 0;
     this.view.update(state.camZ, state.current, state.clockMs, this.waveMs0);
     renderer.render(this.view.scene, this.view.camera);
