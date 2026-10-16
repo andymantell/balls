@@ -54,11 +54,11 @@ export class MainMenu implements Screen {
   private constructor(private app: App, private view: MenuView) {}
 
   static async create(app: App): Promise<MainMenu> {
-    const view = await MenuView.create(await loadModel('menu'), app.textures);
+    const view = await MenuView.create(await loadModel('menu'), app.textures, app.touchMode);
     const m = new MainMenu(app, view);
     if (!state.initialised) {
       state.initialised = true;
-      if (isFirstRun()) {
+      if (isFirstRun() && !app.touchMode) {
         // No setup.dat: the wheel starts on SETUP (0x40b9c8).
         state.sel = 3;
         state.target = 3 * STEP;
@@ -98,15 +98,21 @@ export class MainMenu implements Screen {
 
     switch (state.page) {
       case Page.Wheel: {
-        // The browser port has no QUIT: the wheel steps over its blanked slot (4).
+        // The browser port has no QUIT (and touch devices no SETUP): the wheel
+        // steps over their blanked slots.
+        const hidden = (i: number) => i === 4 || (i === 3 && app.touchMode);
         if (state.s === 0 && up) {
-          state.target -= state.sel === 0 ? 2 * STEP : STEP;
-          state.sel = state.sel === 0 ? 3 : state.sel - 1;
+          do {
+            state.target -= STEP;
+            state.sel = (state.sel + 4) % 5;
+          } while (hidden(state.sel));
           state.s = -1;
         }
         if (state.s === 0 && down) {
-          state.target += state.sel === 3 ? 2 * STEP : STEP;
-          state.sel = state.sel === 3 ? 0 : state.sel + 1;
+          do {
+            state.target += STEP;
+            state.sel = (state.sel + 1) % 5;
+          } while (hidden(state.sel));
           state.s = 1;
         }
         if (state.current > state.target && state.s === -1) state.current -= ticks * WHEEL_SPEED;

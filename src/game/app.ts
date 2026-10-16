@@ -74,6 +74,9 @@ export class App {
     this.resize();
   }
 
+  /** Touch-device mode (set before the first screen): the main menu hides SETUP. */
+  touchMode = false;
+
   /**
    * Touch layout hook: put the picture at the top of the window instead of the
    * middle, leaving room for on-screen controls below it. Off by default.

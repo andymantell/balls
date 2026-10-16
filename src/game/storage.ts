@@ -40,7 +40,8 @@ export function isFirstRun(): boolean {
 }
 
 export function loadSettings(): Settings {
-  const s: Settings = { specular: 0, antialias: 0, keys: [...DEFAULT_KEYS] };
+  // The port defaults to specular and antialiasing on (the 1999 game shipped with both off).
+  const s: Settings = { specular: 1, antialias: 1, keys: [...DEFAULT_KEYS] };
   try {
     const setup = JSON.parse(read('setup') ?? 'null');
     if (setup) {

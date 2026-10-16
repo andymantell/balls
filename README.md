@@ -50,7 +50,7 @@ roll (snapped to the same 8 directions as the arrow keys), **A** for
 action/select and **❚❚** for Esc. **⇄** next to it swaps the stick and buttons
 between thumbs (remembered on that device). In landscape they sit beside the picture; in
 portrait the picture moves up and they sit below it. Record initials are typed
-with the phone keyboard. Add `?touch` to the URL to try them on a desktop.
+with the phone keyboard. The SETUP entry is left off the menu wheel there. Add `?touch` to the URL to try them on a desktop.
 
 As the original manual says, the arrow keys don't steer: each one adds speed
 in its own direction.
@@ -62,7 +62,9 @@ in its own direction.
 * **SINGLE MAP** plays any level.
 * **TOP SCORES** lists best times, starting with the 1999 records that came
   with the game. Select a row to watch its replay.
-* **SETUP**: SPECULAR, ANTIALIAS and CHANGE CONTROLS, as in the original.
+* **SETUP**: SPECULAR, ANTIALIAS and CHANGE CONTROLS, as in the original. The
+  port turns specular and antialiasing on by default. Touch devices don't show
+  SETUP.
 
 Best times, initials and best-time replays are saved in the browser's
 `localStorage`. Replays use the original `.rep` format.

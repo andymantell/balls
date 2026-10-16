@@ -9,7 +9,9 @@ const MODEL_SPIN = 0.0002;
 const WAVE_AMPLITUDE = 16; // 0.008 / 0.0005
 const WAVE_SPEED = 0.0005;
 const WAVE_PHASE = 0.01;
-const QUIT_COLUMN_END = 52; // menu.bmp: QUIT occupies texels x 5..44 of 256
+// menu.bmp columns (texels of 256): QUIT 5..44, SETUP 60..95, TOP SCORES 109..145.
+const QUIT_COLUMN_END = 52;
+const SETUP_COLUMN_END = 102;
 
 /**
  * The main menu scene (menu.3DO, drawn by 0x40ed00): a textured sphere, the
@@ -24,7 +26,7 @@ export class MenuView {
   private model!: Model;
   private wave: { pos: THREE.BufferAttribute; rest: Float32Array }[] = [];
 
-  static async create(file: ThreeDoFile, textures: TextureCache): Promise<MenuView> {
+  static async create(file: ThreeDoFile, textures: TextureCache, hideSetup = false): Promise<MenuView> {
     const v = new MenuView();
     v.model = await Model.build(file, textures, v.lights);
     v.model.addTo(v.scene, { opaque: 0, blended: 1000 });
@@ -33,8 +35,9 @@ export class MenuView {
       const pos = p.mesh.geometry.getAttribute('position') as THREE.BufferAttribute;
       v.wave.push({ pos, rest: (pos.array as Float32Array).slice() });
     }
-    // The browser port has no QUIT entry: black out its column on the wheel
-    // texture (additive blending makes black invisible).
+    // The browser port has no QUIT entry (and on touch devices no SETUP): black
+    // out those columns of the wheel texture (additive blending hides black).
+    const blankEnd = hideSetup ? SETUP_COLUMN_END : QUIT_COLUMN_END;
     for (const p of v.model.parts) {
       const map = p.material.uniforms.map.value as THREE.Texture | null;
       if (p.special !== 5 || !map) continue;
@@ -45,7 +48,7 @@ export class MenuView {
       const ctx = canvas.getContext('2d')!;
       ctx.drawImage(img, 0, 0);
       ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, Math.round((img.width * QUIT_COLUMN_END) / 256), img.height);
+      ctx.fillRect(0, 0, Math.round((img.width * blankEnd) / 256), img.height);
       const tex = map.clone();
       tex.image = canvas;
       tex.needsUpdate = true;

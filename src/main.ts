@@ -11,6 +11,7 @@ async function main(): Promise<void> {
 
   // ?map=<name> jumps straight into a level; ?replay=<name> plays its best-time replay.
   const params = new URLSearchParams(location.search);
+  app.touchMode = params.has('touch') || window.matchMedia('(pointer: coarse)').matches;
   const map = params.get('map');
   const replay = params.get('replay');
   const rec = replay && MAPS.includes(replay) ? await app.records.get(replay) : null;
@@ -21,7 +22,7 @@ async function main(): Promise<void> {
   app.start();
 
   // On-screen controls for touch devices only; desktop never loads this module.
-  if (params.has('touch') || window.matchMedia('(pointer: coarse)').matches) {
+  if (app.touchMode) {
     void import('./mobile/touchControls').then((m) => m.installTouchControls(app));
   }
 
