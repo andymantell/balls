@@ -145,7 +145,8 @@ export class App {
     }
     this.input.pollGamepad();
     this.renderer.setRenderTarget(null);
-    this.renderer.setViewport(0, 0, this.canvas.width, this.canvas.height);
+    // setViewport takes CSS pixels (it applies the pixel ratio itself).
+    this.renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
     this.renderer.setScissorTest(false);
     this.renderer.setClearColor(0x000000, 1);
     this.renderer.clear(true, true, true);
@@ -158,7 +159,8 @@ export class App {
     const r = this.renderer;
     const target = this.msaaTarget;
     r.setRenderTarget(target);
-    if (target) r.setViewport(0, 0, target.width, target.height);
+    // The MSAA target is sized in device pixels; setViewport wants CSS pixels.
+    if (target) r.setViewport(0, 0, target.width / r.getPixelRatio(), target.height / r.getPixelRatio());
     else r.setViewport(this.viewport);
     r.clear(true, true, true);
     this.screen!.render(r);
