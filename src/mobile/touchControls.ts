@@ -9,7 +9,10 @@ import { Key, VK_ESCAPE } from '../game/input';
  * releasing the bound virtual keys, so the game sees exactly what a keyboard
  * would send:
  *  - a floating stick on the left, snapped to the 8 key directions (the game
- *    only knows up/down/left/right, and its steering quirks depend on that);
+ *    only knows up/down/left/right, and its steering quirks depend on that).
+ *    How far it is pushed sets how often those keys are pressed while
+ *    rolling, like feathering the arrow keys: a small push taps, a full push
+ *    holds. In menus the keys are simply held;
  *  - an action button (the ACTION key: ability, menu select);
  *  - a pause/back button (ESC), with a button beside it that swaps the stick
  *    and buttons between the left and right thumbs;
@@ -19,8 +22,11 @@ import { Key, VK_ESCAPE } from '../game/input';
  * portrait the picture moves to the top and the controls sit below it.
  */
 
-const DEAD_ZONE = 14; // px of drag before the stick presses anything
-const STICK_RADIUS = 56; // px the knob can travel
+const DEAD_ZONE = 12; // px of drag before the stick presses anything
+const STICK_RADIUS = 64; // px the knob can travel
+const FULL_PUSH = 0.85; // fraction of the radius at which keys are held down continuously
+const MIN_DUTY = 0.15; // share of ticks pressed just past the dead zone
+const SECTOR_HYSTERESIS = 0.18; // extra 45° sectors the stick must cross to change direction
 const LETTER_INTERVAL = 320; // ms between typed letters (the game takes one per 15 ticks)
 const LETTER_HOLD = 110; // ms each letter key stays down
 const MIN_BAR = 120; // px: narrower side bars put the controls over the picture instead
@@ -103,11 +109,21 @@ export function installTouchControls(app: App): void {
     for (const k of next) held.add(k);
   };
 
-  /** 8-way snap: the original only has four keys and their diagonals. */
+  /** 8-way snap with hysteresis: the original only has four keys and their diagonals. */
+  let sector: number | null = null;
   const directions = (dx: number, dy: number): Set<Key> => {
     const out = new Set<Key>();
-    if (Math.hypot(dx, dy) < DEAD_ZONE) return out;
-    const sector = ((Math.round(Math.atan2(-dy, dx) / (Math.PI / 4)) % 8) + 8) % 8;
+    if (Math.hypot(dx, dy) < DEAD_ZONE) {
+      sector = null;
+      return out;
+    }
+    const raw = Math.atan2(-dy, dx) / (Math.PI / 4);
+    const nearest = ((Math.round(raw) % 8) + 8) % 8;
+    if (sector === null) sector = nearest;
+    else {
+      const diff = Math.abs((((raw - sector) % 8) + 12) % 8 - 4);
+      if (diff > 0.5 + SECTOR_HYSTERESIS) sector = nearest;
+    }
     if (sector === 1 || sector === 2 || sector === 3) out.add(Key.Up);
     if (sector === 5 || sector === 6 || sector === 7) out.add(Key.Down);
     if (sector === 3 || sector === 4 || sector === 5) out.add(Key.Left);
@@ -115,10 +131,25 @@ export function installTouchControls(app: App): void {
     return out;
   };
 
+  // Share of simulation ticks the direction keys are pressed (1 = held).
+  let duty = 0;
+  let dutyAcc = 0;
+  input.tickFilter = (keys) => {
+    if (stickId === null || duty >= 1) return keys;
+    dutyAcc += duty;
+    if (dutyAcc >= 1) {
+      dutyAcc -= 1;
+      return keys;
+    }
+    return { ...keys, up: false, down: false, left: false, right: false };
+  };
+
   const moveStick = (x: number, y: number) => {
     let dx = x - ox, dy = y - oy;
     setDirections(directions(dx, dy));
     const d = Math.hypot(dx, dy);
+    const t = (d - DEAD_ZONE) / (STICK_RADIUS * FULL_PUSH - DEAD_ZONE);
+    duty = t >= 1 ? 1 : Math.max(MIN_DUTY, t);
     if (d > STICK_RADIUS) {
       dx *= STICK_RADIUS / d;
       dy *= STICK_RADIUS / d;
@@ -128,6 +159,9 @@ export function installTouchControls(app: App): void {
 
   const endStick = () => {
     stickId = null;
+    sector = null;
+    duty = 0;
+    dutyAcc = 0;
     setDirections(new Set());
     base.style.visibility = knob.style.visibility = 'hidden';
     ghost.style.visibility = 'visible';

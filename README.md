@@ -46,7 +46,8 @@ are shown as Windows virtual-key codes. A gamepad also works (d-pad or stick,
 A = action, Start/B = Esc, Y = restart).
 
 On phones and tablets, on-screen controls appear: drag anywhere on the left to
-roll (snapped to the same 8 directions as the arrow keys), **A** for
+roll (snapped to the same 8 directions as the arrow keys; a small push taps
+the keys rapidly for gentle steering, a full push holds them), **A** for
 action/select and **❚❚** for Esc. **⇄** next to it swaps the stick and buttons
 between thumbs (remembered on that device). In landscape they sit beside the picture; in
 portrait the picture moves up and they sit below it. Record initials are typed

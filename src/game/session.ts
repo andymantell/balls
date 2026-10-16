@@ -190,6 +190,7 @@ export class LevelSession implements Screen {
         step = { up: false, down: false, left: false, right: false, action: k < p.length ? p.actions[k] !== 0 : false };
       } else {
         step = { up: input.up, down: input.down, left: input.left, right: input.right, action: input.action };
+        if (input.tickFilter) step = input.tickFilter(step);
       }
       w.step(step);
       for (const s of w.sounds) app.audio.play(s.sample, s.volume, s.count);

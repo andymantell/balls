@@ -28,6 +28,8 @@ export const VK_R = 0x52;
 /** Defaults the game falls back to without keys.dat (0x406cb9): arrows + space. */
 export const DEFAULT_KEYS = [38, 40, 37, 39, 32];
 
+import type { Input } from '../sim/world';
+
 export enum Key {
   Up,
   Down,
@@ -47,6 +49,11 @@ export class InputState {
   lastKey = 0;
   private held = new Set<number>();
   private padHeld = new Set<number>();
+  /**
+   * Touch hook: adjusts the keys used for each simulation tick while playing
+   * (the touch stick uses it to pulse keys for partial pushes). Never set on desktop.
+   */
+  tickFilter: ((keys: Input) => Input) | null = null;
 
   attach(target: Window): void {
     target.addEventListener('keydown', (e) => {
