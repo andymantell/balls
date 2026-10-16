@@ -45,6 +45,12 @@ Keys can be changed in **SETUP → CHANGE CONTROLS**. As in 1999, the bindings
 are shown as Windows virtual-key codes. A gamepad also works (d-pad or stick,
 A = action, Start/B = Esc, Y = restart).
 
+On phones and tablets, on-screen controls appear: drag anywhere on the left to
+roll (snapped to the same 8 directions as the arrow keys), **A** for
+action/select and **❚❚** for Esc. In landscape they sit beside the picture; in
+portrait the picture moves up and they sit below it. Record initials are typed
+with the phone keyboard. Add `?touch` to the URL to try them on a desktop.
+
 As the original manual says, the arrow keys don't steer: each one adds speed
 in its own direction.
 

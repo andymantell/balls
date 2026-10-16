@@ -20,6 +20,11 @@ async function main(): Promise<void> {
   else app.show(MainMenu.create(app));
   app.start();
 
+  // On-screen controls for touch devices only; desktop never loads this module.
+  if (params.has('touch') || window.matchMedia('(pointer: coarse)').matches) {
+    void import('./mobile/touchControls').then((m) => m.installTouchControls(app));
+  }
+
   // Custom levels: drop a MAKEMAP .3do (plus its .bmp/.png textures) on the page.
   window.addEventListener('dragover', (e) => e.preventDefault());
   window.addEventListener('drop', (e) => {

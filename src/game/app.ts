@@ -13,6 +13,8 @@ export interface Screen {
   /** Draws the 3D part; text goes through app.text. */
   render(renderer: THREE.WebGLRenderer): void;
   dispose(): void;
+  /** True while the screen waits for typed letters (record initials); used by touch controls. */
+  wantsTextInput?(): boolean;
 }
 
 const TICK_MS = 16;
@@ -70,6 +72,26 @@ export class App {
   /** Specular is a per-material uniform; antialiasing renders through an MSAA target. */
   applySettings(): void {
     this.resize();
+  }
+
+  /**
+   * Touch layout hook: put the picture at the top of the window instead of the
+   * middle, leaving room for on-screen controls below it. Off by default.
+   */
+  pictureAtTop = false;
+
+  /** The 4:3 picture's rectangle in CSS pixels, measured from the window's top-left. */
+  get pictureRect(): { x: number; y: number; width: number; height: number } {
+    const v = this.viewport;
+    return { x: v.x, y: window.innerHeight - v.y - v.w, width: v.z, height: v.w };
+  }
+
+  relayout(): void {
+    this.resize();
+  }
+
+  wantsTextInput(): boolean {
+    return this.screen?.wantsTextInput?.() ?? false;
   }
 
   get specular(): number {
@@ -169,7 +191,9 @@ export class App {
       vw = Math.floor((ch * 4) / 3);
     }
     // setViewport takes CSS pixels and applies the pixel ratio itself.
-    this.viewport.set((cw - vw) / 2 / ratio, (ch - vh) / 2 / ratio, vw / ratio, vh / ratio);
+    // (y counts up from the bottom of the window.)
+    const y = this.pictureAtTop ? (ch - vh) / ratio : (ch - vh) / 2 / ratio;
+    this.viewport.set((cw - vw) / 2 / ratio, y, vw / ratio, vh / ratio);
 
     this.msaaTarget?.dispose();
     this.msaaTarget = null;

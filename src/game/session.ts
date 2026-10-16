@@ -275,6 +275,11 @@ export class LevelSession implements Screen {
     }
   }
 
+  /** Touch controls bring up the phone keyboard while this is true. */
+  wantsTextInput(): boolean {
+    return this.isNewBest && this.mode === 1 && this.banner >= NAME_AT && this.name.length < 3;
+  }
+
   /** Name entry for a new best (0x40cd6d..0x40ce22). */
   private nameEntry(ticks: number): void {
     const key = this.app.input.lastKey;
