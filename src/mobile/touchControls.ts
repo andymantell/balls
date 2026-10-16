@@ -11,7 +11,8 @@ import { Key, VK_ESCAPE } from '../game/input';
  *  - a floating stick on the left, snapped to the 8 key directions (the game
  *    only knows up/down/left/right, and its steering quirks depend on that);
  *  - an action button (the ACTION key: ability, menu select);
- *  - a pause/back button (ESC);
+ *  - a pause/back button (ESC), with a button beside it that swaps the stick
+ *    and buttons between the left and right thumbs;
  *  - the phone keyboard while a new record asks for initials.
  *
  * In landscape the controls sit in the black bars beside the 4:3 picture; in
@@ -84,7 +85,7 @@ export function installTouchControls(app: App): void {
   document.head.appendChild(style);
 
   const hint = document.getElementById('hint');
-  if (hint) hint.textContent = 'Drag on the left to roll. A = action and select, ❚❚ = back. Tap to enable sound.';
+  if (hint) hint.textContent = 'Drag on the stick side to roll. A = action and select, ❚❚ = back, ⇄ = swap sides. Tap to enable sound.';
 
   // ---- Stick ---------------------------------------------------------------
   const zone = el('div', 'tc-zone');
@@ -228,6 +229,31 @@ export function installTouchControls(app: App): void {
     return { top: parseFloat(s.paddingTop) || 0, right: parseFloat(s.paddingRight) || 0, bottom: parseFloat(s.paddingBottom) || 0, left: parseFloat(s.paddingLeft) || 0 };
   };
 
+  // Left- or right-handed: the stick and the buttons swap sides (remembered per device).
+  const FLIP_KEY = 'balls.touch.flipped';
+  let flipped = false;
+  try {
+    flipped = localStorage.getItem(FLIP_KEY) === '1';
+  } catch {
+    /* storage unavailable */
+  }
+  const swap = el('div', 'tc-button tc-pause tc-swap');
+  swap.textContent = '⇄';
+  swap.setAttribute('aria-label', 'Swap controls between left and right');
+  swap.addEventListener('pointerdown', () => swap.classList.add('down'));
+  swap.addEventListener('pointercancel', () => swap.classList.remove('down'));
+  swap.addEventListener('pointerup', () => {
+    swap.classList.remove('down');
+    flipped = !flipped;
+    try {
+      localStorage.setItem(FLIP_KEY, flipped ? '1' : '0');
+    } catch {
+      /* storage unavailable */
+    }
+    if (stickId !== null) endStick();
+    layout();
+  });
+
   const layout = () => {
     const W = window.innerWidth, H = window.innerHeight;
     const portrait = H > W;
@@ -237,25 +263,36 @@ export function installTouchControls(app: App): void {
     }
     const pic = app.pictureRect;
     const inset = insets();
+    // Laid out for a left-thumb stick, then mirrored when flipped.
+    const stickInset = flipped ? inset.right : inset.left;
+    const buttonInset = flipped ? inset.left : inset.right;
+    const mx = (x: number, w = 0) => (flipped ? W - x - w : x);
+    const put = (e: HTMLElement, x: number, y: number, w?: number, h?: number) => place(e, mx(x, w ?? 0), y, w, h);
     if (portrait) {
       // Controls fill the space under the picture.
       const top = pic.y + pic.height;
       const h = H - top - inset.bottom;
-      place(zone, 0, top, W / 2, H - top);
-      place(ghost, W * 0.25, top + h / 2);
-      place(action, W * 0.75, top + h / 2);
-      place(pause, W - 34 - inset.right, top + 34);
+      put(zone, 0, top, W / 2, H - top);
+      put(ghost, W * 0.25, top + h / 2);
+      put(action, W * 0.75, top + h / 2);
+      const pauseX = W - 34 - buttonInset;
+      put(pause, pauseX, top + 34);
+      put(swap, pauseX - 62, top + 34);
       typeButton.style.top = `${top + 12}px`;
     } else {
       const bar = pic.x;
       const wide = bar >= MIN_BAR;
       // Side bars when there's room for them, otherwise over the picture's lower corners.
       const leftW = wide ? bar : W * 0.35;
-      place(zone, 0, wide ? 0 : H * 0.4, leftW, wide ? H : H * 0.6);
-      place(ghost, Math.max(inset.left + STICK_RADIUS + 8, leftW / 2), H * 0.68);
-      const rightX = wide ? W - bar / 2 : W - 70 - inset.right;
-      place(action, Math.min(rightX, W - inset.right - 54), H * 0.68);
-      place(pause, wide ? Math.min(W - bar / 2, W - inset.right - 34) : W - 34 - inset.right, 34 + inset.top);
+      put(zone, 0, wide ? 0 : H * 0.4, leftW, wide ? H : H * 0.6);
+      put(ghost, Math.max(stickInset + STICK_RADIUS + 8, leftW / 2), H * 0.68);
+      const rightX = wide ? W - bar / 2 : W - 70 - buttonInset;
+      put(action, Math.min(rightX, W - buttonInset - 54), H * 0.68);
+      const pauseX = wide ? Math.min(W - bar / 2, W - buttonInset - 34) : W - 34 - buttonInset;
+      const pauseY = 34 + inset.top;
+      put(pause, pauseX, pauseY);
+      if (wide) put(swap, pauseX, pauseY + 62);
+      else put(swap, pauseX - 62, pauseY);
       typeButton.style.top = `${pic.y + pic.height * 0.62}px`;
     }
   };

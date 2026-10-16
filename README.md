@@ -47,7 +47,8 @@ A = action, Start/B = Esc, Y = restart).
 
 On phones and tablets, on-screen controls appear: drag anywhere on the left to
 roll (snapped to the same 8 directions as the arrow keys), **A** for
-action/select and **❚❚** for Esc. In landscape they sit beside the picture; in
+action/select and **❚❚** for Esc. **⇄** next to it swaps the stick and buttons
+between thumbs (remembered on that device). In landscape they sit beside the picture; in
 portrait the picture moves up and they sit below it. Record initials are typed
 with the phone keyboard. Add `?touch` to the URL to try them on a desktop.
 
