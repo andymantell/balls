@@ -8,7 +8,8 @@ import { Key, VK_ESCAPE } from '../game/input';
  * Everything feeds the same InputState the keyboard uses, by pressing and
  * releasing the bound virtual keys, so the game sees exactly what a keyboard
  * would send:
- *  - a floating stick on the left, snapped to the 8 key directions (the game
+ *  - a floating stick on the left (a drag can also start anywhere on the
+ *    picture), snapped to the 8 key directions (the game
  *    only knows up/down/left/right, and its steering quirks depend on that).
  *    How far it is pushed sets how often those keys are pressed while
  *    rolling, like feathering the arrow keys: a small push taps, a full push
@@ -30,6 +31,7 @@ const SECTOR_HYSTERESIS = 0.18; // extra 45° sectors the stick must cross to ch
 const LETTER_INTERVAL = 320; // ms between typed letters (the game takes one per 15 ticks)
 const LETTER_HOLD = 110; // ms each letter key stays down
 const MIN_BAR = 120; // px: narrower side bars put the controls over the picture instead
+const ACTION_GUARD = 30; // px around the action button where a near miss doesn't start the stick
 
 const CSS = `
 .tc-zone { position: fixed; touch-action: none; -webkit-user-select: none; user-select: none; z-index: 2; }
@@ -91,7 +93,7 @@ export function installTouchControls(app: App): void {
   document.head.appendChild(style);
 
   const hint = document.getElementById('hint');
-  if (hint) hint.textContent = 'Drag on the stick side to roll. A = action and select, ❚❚ = back, ⇄ = swap sides, ⛶ = fullscreen. Tap to enable sound.';
+  if (hint) hint.textContent = 'Drag on the stick side or the picture to roll. A = action and select, ❚❚ = back, ⇄ = swap sides, ⛶ = fullscreen. Tap to enable sound.';
 
   // ---- Stick ---------------------------------------------------------------
   const zone = el('div', 'tc-zone');
@@ -167,8 +169,18 @@ export function installTouchControls(app: App): void {
     ghost.style.visibility = 'visible';
   };
 
+  // Where a drag may start: the stick's side and the whole picture, but not the
+  // buttons' side below/beside it or just around the action button (set by layout).
+  let buttonArea = { x: 0, y: 0, w: 0, h: 0 };
+  let actionAt = { x: 0, y: 0 };
+  const stickCanStart = (x: number, y: number) => {
+    const a = buttonArea;
+    if (x >= a.x && x < a.x + a.w && y >= a.y && y < a.y + a.h) return false;
+    return Math.hypot(x - actionAt.x, y - actionAt.y) > 46 + ACTION_GUARD;
+  };
+
   zone.addEventListener('pointerdown', (e) => {
-    if (stickId !== null) return;
+    if (stickId !== null || !stickCanStart(e.clientX, e.clientY)) return;
     stickId = e.pointerId;
     zone.setPointerCapture(e.pointerId);
     ox = e.clientX;
@@ -339,13 +351,22 @@ export function installTouchControls(app: App): void {
     const buttonInset = flipped ? inset.left : inset.right;
     const mx = (x: number, w = 0) => (flipped ? W - x - w : x);
     const put = (e: HTMLElement, x: number, y: number, w?: number, h?: number) => place(e, mx(x, w ?? 0), y, w, h);
+    const setButtonArea = (x: number, y: number, w: number, h: number) => {
+      buttonArea = { x: mx(x, w), y, w, h };
+    };
+    const putAction = (x: number, y: number) => {
+      put(action, x, y);
+      actionAt = { x: mx(x), y };
+    };
+    // The stick zone covers the whole window; stickCanStart picks where drags begin.
+    place(zone, 0, 0, W, H);
     if (portrait) {
       // Controls fill the space under the picture.
       const top = pic.y + pic.height;
       const h = H - top - inset.bottom;
-      put(zone, 0, top, W / 2, H - top);
+      setButtonArea(W / 2, top, W / 2, H - top);
       put(ghost, W * 0.25, top + h / 2);
-      put(action, W * 0.75, top + h / 2);
+      putAction(W * 0.75, top + h / 2);
       const pauseX = W - 34 - buttonInset;
       put(pause, pauseX, top + 34);
       put(swap, pauseX - 62, top + 34);
@@ -356,10 +377,11 @@ export function installTouchControls(app: App): void {
       const wide = bar >= MIN_BAR;
       // Side bars when there's room for them, otherwise over the picture's lower corners.
       const leftW = wide ? bar : W * 0.35;
-      put(zone, 0, wide ? 0 : H * 0.4, leftW, wide ? H : H * 0.6);
+      if (wide) setButtonArea(pic.x + pic.width, 0, W - pic.x - pic.width, H);
+      else setButtonArea(0, 0, 0, 0);
       put(ghost, Math.max(stickInset + STICK_RADIUS + 8, leftW / 2), H * 0.68);
       const rightX = wide ? W - bar / 2 : W - 70 - buttonInset;
-      put(action, Math.min(rightX, W - buttonInset - 54), H * 0.68);
+      putAction(Math.min(rightX, W - buttonInset - 54), H * 0.68);
       const pauseX = wide ? Math.min(W - bar / 2, W - buttonInset - 34) : W - 34 - buttonInset;
       const pauseY = 34 + inset.top;
       put(pause, pauseX, pauseY);

@@ -45,8 +45,8 @@ Keys can be changed in **SETUP → CHANGE CONTROLS**. As in 1999, the bindings
 are shown as Windows virtual-key codes. A gamepad also works (d-pad or stick,
 A = action, Start/B = Esc, Y = restart).
 
-On phones and tablets, on-screen controls appear: drag anywhere on the left to
-roll (snapped to the same 8 directions as the arrow keys; a small push taps
+On phones and tablets, on-screen controls appear: drag on the left, or anywhere on the
+picture, to roll (snapped to the same 8 directions as the arrow keys; a small push taps
 the keys rapidly for gentle steering, a full push holds them), **A** for
 action/select and **❚❚** for Esc. **⇄** next to it swaps the stick and buttons
 between thumbs (remembered on that device), and **⛶** switches fullscreen
