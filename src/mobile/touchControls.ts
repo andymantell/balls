@@ -14,8 +14,8 @@ import { Key, VK_ESCAPE } from '../game/input';
  *    rolling, like feathering the arrow keys: a small push taps, a full push
  *    holds. In menus the keys are simply held;
  *  - an action button (the ACTION key: ability, menu select);
- *  - a pause/back button (ESC), with a button beside it that swaps the stick
- *    and buttons between the left and right thumbs;
+ *  - a pause/back button (ESC), with buttons beside it that swap the stick
+ *    and buttons between the left and right thumbs and toggle fullscreen;
  *  - the phone keyboard while a new record asks for initials.
  *
  * In landscape the controls sit in the black bars beside the 4:3 picture; in
@@ -91,7 +91,7 @@ export function installTouchControls(app: App): void {
   document.head.appendChild(style);
 
   const hint = document.getElementById('hint');
-  if (hint) hint.textContent = 'Drag on the stick side to roll. A = action and select, ❚❚ = back, ⇄ = swap sides. Tap to enable sound.';
+  if (hint) hint.textContent = 'Drag on the stick side to roll. A = action and select, ❚❚ = back, ⇄ = swap sides, ⛶ = fullscreen. Tap to enable sound.';
 
   // ---- Stick ---------------------------------------------------------------
   const zone = el('div', 'tc-zone');
@@ -288,6 +288,43 @@ export function installTouchControls(app: App): void {
     layout();
   });
 
+  // Fullscreen hides the browser's address bar and buttons. Browsers only allow
+  // it from a tap, and iPhone Safari not at all, so the button only appears
+  // where it can work.
+  type FullscreenDoc = Document & { webkitFullscreenEnabled?: boolean; webkitFullscreenElement?: Element | null; webkitExitFullscreen?: () => void };
+  type FullscreenEl = HTMLElement & { webkitRequestFullscreen?: () => void };
+  const fdoc = document as FullscreenDoc;
+  const canFullscreen = !!(document.fullscreenEnabled || fdoc.webkitFullscreenEnabled);
+  const isFullscreen = () => !!(document.fullscreenElement || fdoc.webkitFullscreenElement);
+  const full = el('div', 'tc-button tc-pause tc-full');
+  full.setAttribute('aria-label', 'Toggle fullscreen');
+  const updateFull = () => {
+    full.textContent = isFullscreen() ? '✕' : '⛶';
+  };
+  full.style.display = canFullscreen ? '' : 'none';
+  updateFull();
+  full.addEventListener('pointerdown', () => full.classList.add('down'));
+  full.addEventListener('pointercancel', () => full.classList.remove('down'));
+  full.addEventListener('pointerup', () => {
+    full.classList.remove('down');
+    if (stickId !== null) endStick();
+    const root = document.documentElement as FullscreenEl;
+    if (isFullscreen()) {
+      if (document.exitFullscreen) void document.exitFullscreen().catch(() => undefined);
+      else fdoc.webkitExitFullscreen?.();
+    } else if (root.requestFullscreen) {
+      void root.requestFullscreen({ navigationUI: 'hide' }).catch(() => undefined);
+    } else root.webkitRequestFullscreen?.();
+  });
+  document.addEventListener('fullscreenchange', () => {
+    updateFull();
+    layout();
+  });
+  document.addEventListener('webkitfullscreenchange', () => {
+    updateFull();
+    layout();
+  });
+
   const layout = () => {
     const W = window.innerWidth, H = window.innerHeight;
     const portrait = H > W;
@@ -312,6 +349,7 @@ export function installTouchControls(app: App): void {
       const pauseX = W - 34 - buttonInset;
       put(pause, pauseX, top + 34);
       put(swap, pauseX - 62, top + 34);
+      put(full, pauseX - 124, top + 34);
       typeButton.style.top = `${top + 12}px`;
     } else {
       const bar = pic.x;
@@ -325,8 +363,13 @@ export function installTouchControls(app: App): void {
       const pauseX = wide ? Math.min(W - bar / 2, W - buttonInset - 34) : W - 34 - buttonInset;
       const pauseY = 34 + inset.top;
       put(pause, pauseX, pauseY);
-      if (wide) put(swap, pauseX, pauseY + 62);
-      else put(swap, pauseX - 62, pauseY);
+      if (wide) {
+        put(swap, pauseX, pauseY + 62);
+        put(full, pauseX, pauseY + 124);
+      } else {
+        put(swap, pauseX - 62, pauseY);
+        put(full, pauseX - 124, pauseY);
+      }
       typeButton.style.top = `${pic.y + pic.height * 0.62}px`;
     }
   };

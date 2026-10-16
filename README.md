@@ -49,7 +49,8 @@ On phones and tablets, on-screen controls appear: drag anywhere on the left to
 roll (snapped to the same 8 directions as the arrow keys; a small push taps
 the keys rapidly for gentle steering, a full push holds them), **A** for
 action/select and **❚❚** for Esc. **⇄** next to it swaps the stick and buttons
-between thumbs (remembered on that device). In landscape they sit beside the picture; in
+between thumbs (remembered on that device), and **⛶** switches fullscreen
+where the browser allows it (not iPhone Safari). In landscape they sit beside the picture; in
 portrait the picture moves up and they sit below it. Record initials are typed
 with the phone keyboard. The SETUP entry is left off the menu wheel there. Add `?touch` to the URL to try them on a desktop.
 
